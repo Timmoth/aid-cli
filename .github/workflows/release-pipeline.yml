@@ -129,6 +129,6 @@ jobs:
         with:
           tag_name: ${{ steps.tag.outputs.release_tag }}
           files: |
-            aid-win.exe    # Windows artifact
-            aid-linux      # Linux artifact
-            aid-macos      # macOS artifact
+            aid-win.exe
+            aid-linux
+            aid-macos
