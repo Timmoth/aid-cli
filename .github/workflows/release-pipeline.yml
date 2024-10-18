@@ -26,7 +26,14 @@ jobs:
         run: |
           cargo build --release
           mkdir -p output/win
-          cp target/release/aid.exe output/win/aid.exe
+          cp target/release/aid.exe output/win/aid-win.exe
+
+      # Upload the Windows artifact
+      - name: Upload Windows artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: windows-artifact
+          path: output/win/aid-win.exe
 
   # Build for Linux
   build_linux:
@@ -47,7 +54,14 @@ jobs:
         run: |
           cargo build --release
           mkdir -p output/linux
-          cp target/release/aid output/linux/aid
+          cp target/release/aid output/linux/aid-linux
+
+      # Upload the Linux artifact
+      - name: Upload Linux artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: linux-artifact
+          path: output/linux/aid-linux
 
   # Build for macOS
   build_macos:
@@ -68,7 +82,14 @@ jobs:
         run: |
           cargo build --release
           mkdir -p output/osx
-          cp target/release/aid output/osx/aid
+          cp target/release/aid output/osx/aid-mac
+
+      # Upload the macOS artifact
+      - name: Upload macOS artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: macos-artifact
+          path: output/osx/aid-mac
 
   # Create a single GitHub release with all artifacts
   create_release:
@@ -78,6 +99,22 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
+      # Download artifacts from previous jobs
+      - name: Download Windows artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: windows-artifact
+
+      - name: Download Linux artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: linux-artifact
+
+      - name: Download macOS artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: macos-artifact
 
       - name: Generate release tag
         id: tag
@@ -92,6 +129,6 @@ jobs:
         with:
           tag_name: ${{ steps.tag.outputs.release_tag }}
           files: |
-            output/win/aid.exe
-            output/linux/aid
-            output/osx/aid
+            aid-win.exe    # Windows artifact
+            aid-linux      # Linux artifact
+            aid-macos      # macOS artifact
