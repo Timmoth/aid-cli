@@ -20,3 +20,9 @@ A CLI toolkit featuring a variety of helpful utilities.
 | aid mem usage | -w, --watch, -j, --json | sytstem memory usage |
 | aid cpu into  | -j, --json              | cpu info             |
 | aid disk into | -j, --json              | disk info            |
+
+## Http
+
+| command      | options  | outputs            |
+|--------------|----------|--------------------|
+| aid http get | -u --url | response body text |

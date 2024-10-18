@@ -8,6 +8,7 @@ mod mem_commands;
 mod port_commands;
 mod disk_commands;
 mod network_commands;
+mod http_commands;
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
@@ -30,6 +31,8 @@ enum Commands {
     Disk(DiskCommands),
     #[command(subcommand)]
     Network(NetworkCommands),
+    #[command(subcommand)]
+    Http(HttpCommands),
 }
 
 #[derive(Subcommand, Debug, Clone)]
@@ -114,6 +117,14 @@ enum NetworkCommands {
     },
 }
 
+#[derive(Subcommand, Debug, Clone)]
+enum HttpCommands {
+    Get {
+        #[arg(short = 'u', long = "url")]
+        url: String,
+    },
+}
+
 #[tokio::main]
 async fn main() {
     let args = Args::parse();
@@ -147,6 +158,11 @@ async fn main() {
         Commands::Network(sub_command) => match sub_command {
             NetworkCommands::Info { json } => {
                 network_commands::system_network_info(json).await
+            }
+        },
+        Commands::Http(sub_command) => match sub_command {
+            HttpCommands::Get { url } => {
+                http_commands::http_get_request(url).await
             }
         },
     }

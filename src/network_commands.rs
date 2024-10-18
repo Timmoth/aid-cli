@@ -1,5 +1,5 @@
-use sysinfo::{Networks};
 use serde_derive::Serialize;
+use sysinfo::Networks;
 
 use crate::format_utils;
 
