@@ -1,0 +1,60 @@
+name: Release Pipeline
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          override-file: Cargo.toml
+          components: clippy
+
+      - name: Build for Windows
+        run: |
+          cargo build --release --target=x86_64-pc-windows-gnu
+          mkdir -p output/win
+          cp target/x86_64-pc-windows-gnu/release/aid.exe output/win/aid.exe
+
+      - name: Build for Linux
+        run: |
+          cargo build --release --target=x86_64-unknown-linux-gnu
+          mkdir -p output/linux
+          cp target/x86_64-unknown-linux-gnu/release/aid output/linux/aid
+
+      - name: Build for macOS
+        run: |
+          cargo build --release --target=x86_64-apple-darwin
+          mkdir -p output/osx
+          cp target/x86_64-apple-darwin/release/aid output/mac/aid
+
+      # Generate release tag based on version
+      - name: Generate release tag
+        id: tag
+        run: |
+          VERSION=0.1.0
+          echo "::set-output name=release_tag::aid-${VERSION}"
+
+      # Create a single release with all artifacts
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.tag.outputs.release_tag }}
+          files: |
+            output/win/aid.exe
+            output/linux/aid
+            output/mac/aid
