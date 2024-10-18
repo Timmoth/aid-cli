@@ -7,7 +7,29 @@ permissions:
   contents: write
 
 jobs:
-  build:
+  # Build for Windows
+  build_windows:
+    runs-on: windows-latest  # Use Windows runner
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          components: clippy
+
+      - name: Build for Windows
+        run: |
+          cargo build --release
+          mkdir -p output/win
+          cp target/release/aid.exe output/win/aid.exe
+
+  # Build for Linux
+  build_linux:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,38 +43,48 @@ jobs:
           override: true
           components: clippy
 
-      - name: Install required targets
-        run: |
-          rustup target add x86_64-pc-windows-gnu
-          rustup target add x86_64-apple-darwin
-          rustup target add x86_64-unknown-linux-gnu
-
-      - name: Build for Windows
-        run: |
-          cargo build --release --target=x86_64-pc-windows-gnu
-          mkdir -p output/win
-          cp target/x86_64-pc-windows-gnu/release/aid.exe output/win/aid.exe
-
       - name: Build for Linux
         run: |
-          cargo build --release --target=x86_64-unknown-linux-gnu
+          cargo build --release
           mkdir -p output/linux
-          cp target/x86_64-unknown-linux-gnu/release/aid output/linux/aid
+          cp target/release/aid output/linux/aid
+
+  # Build for macOS
+  build_macos:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          components: clippy
 
       - name: Build for macOS
         run: |
-          cargo build --release --target=x86_64-apple-darwin
+          cargo build --release
           mkdir -p output/osx
-          cp target/x86_64-apple-darwin/release/aid output/osx/aid
+          cp target/release/aid output/osx/aid
 
-      # Generate release tag based on version
+  # Create a single GitHub release with all artifacts
+  create_release:
+    runs-on: ubuntu-latest
+    needs: [build_windows, build_linux, build_macos]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Generate release tag
         id: tag
         run: |
           VERSION=0.1.0
           echo "::set-output name=release_tag::aid-${VERSION}"
 
-      # Create a single release with all artifacts
       - name: Create GitHub release
         uses: softprops/action-gh-release@v1
         env:
