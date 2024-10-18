@@ -131,4 +131,4 @@ jobs:
           files: |
             aid-win.exe
             aid-linux
-            aid-macos
+            aid-mac

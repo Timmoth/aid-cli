@@ -6,6 +6,8 @@ mod ip_commands;
 mod ip_utils;
 mod mem_commands;
 mod port_commands;
+mod disk_commands;
+mod network_commands;
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
@@ -24,6 +26,10 @@ enum Commands {
     Cpu(CpuCommands),
     #[command(subcommand)]
     Mem(MemoryCommands),
+    #[command(subcommand)]
+    Disk(DiskCommands),
+    #[command(subcommand)]
+    Network(NetworkCommands),
 }
 
 #[derive(Subcommand, Debug, Clone)]
@@ -37,13 +43,13 @@ enum IpCommands {
         json: bool,
     },
     Scan {
-        #[arg(short = 'i', long="ip", default_value = "")]
+        #[arg(short = 'i', long = "ip", default_value = "")]
         ip: Option<String>,
         #[arg(short = 'j', long = "json", action = clap::ArgAction::SetTrue)]
         json: bool,
     },
     Status {
-        #[arg(short = 'i', long="ip")]
+        #[arg(short = 'i', long = "ip")]
         ip: String,
         #[arg(short = 'j', long = "json", action = clap::ArgAction::SetTrue)]
         json: bool,
@@ -53,7 +59,7 @@ enum IpCommands {
 #[derive(Subcommand, Debug, Clone)]
 enum PortCommands {
     Status {
-        #[arg(short = 'i', long="ip")]
+        #[arg(short = 'i', long = "ip")]
         ip: String,
         #[arg(short = 'p')]
         port: u16,
@@ -61,7 +67,7 @@ enum PortCommands {
         json: bool,
     },
     Scan {
-        #[arg(short = 'i', long="ip")]
+        #[arg(short = 'i', long = "ip")]
         ip: String,
         #[arg(short = 'j', long = "json", action = clap::ArgAction::SetTrue)]
         json: bool,
@@ -70,7 +76,10 @@ enum PortCommands {
 
 #[derive(Subcommand, Debug, Clone)]
 enum CpuCommands {
-    Details,
+    Info {
+        #[arg(short = 'j', long = "json", action = clap::ArgAction::SetTrue)]
+        json: bool,
+    },
     Usage {
         #[arg(short = 'w', long = "watch", action = clap::ArgAction::SetTrue)]
         watch: bool,
@@ -84,6 +93,22 @@ enum MemoryCommands {
     Usage {
         #[arg(short = 'w', long = "watch", action = clap::ArgAction::SetTrue)]
         watch: bool,
+        #[arg(short = 'j', long = "json", action = clap::ArgAction::SetTrue)]
+        json: bool,
+    },
+}
+
+#[derive(Subcommand, Debug, Clone)]
+enum DiskCommands {
+    Info {
+        #[arg(short = 'j', long = "json", action = clap::ArgAction::SetTrue)]
+        json: bool,
+    },
+}
+
+#[derive(Subcommand, Debug, Clone)]
+enum NetworkCommands {
+    Info {
         #[arg(short = 'j', long = "json", action = clap::ArgAction::SetTrue)]
         json: bool,
     },
@@ -106,12 +131,22 @@ async fn main() {
             }
         },
         Commands::Cpu(sub_command) => match sub_command {
-            CpuCommands::Details => cpu_commands::system_cpu_details(),
+            CpuCommands::Info {json } => cpu_commands::system_cpu_info(json),
             CpuCommands::Usage { watch, json } => cpu_commands::system_cpu_usage(watch, json).await,
         },
         Commands::Mem(sub_command) => match sub_command {
             MemoryCommands::Usage { watch, json } => {
                 mem_commands::system_mem_usage(watch, json).await
+            }
+        },
+        Commands::Disk(sub_command) => match sub_command {
+            DiskCommands::Info { json } => {
+                disk_commands::system_disk_info(json).await
+            }
+        },
+        Commands::Network(sub_command) => match sub_command {
+            NetworkCommands::Info { json } => {
+                network_commands::system_network_info(json).await
             }
         },
     }

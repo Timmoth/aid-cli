@@ -1,46 +1,51 @@
-use sysinfo::System;
-use std::time::Duration;
 use serde_derive::Serialize;
+use std::{collections::HashSet, time::Duration};
+use sysinfo::System;
 
 use crate::format_utils;
 
-pub fn system_cpu_details(){
- // Create a System object
-    let mut system = System::new_all();
+#[derive(Serialize, Debug)]
+struct CpuInfo {
+    name: String,
+}
 
-    // Refresh system information
-    system.refresh_all();
+pub fn system_cpu_info(json: bool) {
+    let s = sysinfo::System::new_all();
 
-    for cpu in system.cpus() {
-        println!("{}%", cpu.cpu_usage());
-        println!("{}%", cpu.name());
+    let unique_vendor_ids: HashSet<String> =
+        s.cpus().iter().map(|c| c.brand().to_string()).collect();
+    let unique_vendor_ids_vec: Vec<String> = unique_vendor_ids.into_iter().collect();
+
+    if json {
+        let output: Vec<CpuInfo> = unique_vendor_ids_vec.iter().map(|v| CpuInfo { name: v.to_string() }).collect();
+        format_utils::print_json(&output);
+    } else {
+        let joined_vendor_ids = unique_vendor_ids_vec.join(", ");
+        println!("{}", joined_vendor_ids);
     }
-
-    println!("Total CPU usage: {}%", system.global_cpu_usage());
-    println!("Total CPU usage: {}%", system.available_memory());
-    println!("Total CPU usage: {:?}%", system.physical_core_count());
-    println!("Total CPU usage: {}%", system.total_memory());
-    println!("Total CPU usage: {}%", system.used_memory());
 }
 
 #[derive(Serialize, Debug)]
 struct CpuUsage {
     total: f64,
-    cores: Vec<f64>,
+    core_usage: Vec<f64>,
 }
 
-fn output_cpu_usage(system: &System, json: bool){
+fn output_cpu_usage(system: &System, json: bool) {
     let total: f32 = system.global_cpu_usage();
 
     if json {
-
         let mem_usage = CpuUsage {
             total: format_utils::round_to_one_decimal(total),
-            cores: system.cpus().iter().map(|c| format_utils::round_to_one_decimal(c.cpu_usage())).collect(),
+            core_usage: system
+                .cpus()
+                .iter()
+                .map(|c| format_utils::round_to_one_decimal(c.cpu_usage()))
+                .collect(),
         };
 
         format_utils::print_json(&mem_usage);
-    }else{
+    } else {
         println!(
             "total: {}, cpus: {}",
             format_utils::format_percent(total),
