@@ -9,6 +9,7 @@ mod port_commands;
 mod disk_commands;
 mod network_commands;
 mod http_commands;
+mod json_commands;
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
@@ -33,6 +34,8 @@ enum Commands {
     Network(NetworkCommands),
     #[command(subcommand)]
     Http(HttpCommands),
+    #[command(subcommand)]
+    Json(JsonCommands),
 }
 
 #[derive(Subcommand, Debug, Clone)]
@@ -123,6 +126,18 @@ enum HttpCommands {
         #[arg(short = 'u', long = "url")]
         url: String,
     },
+    Serve{
+        #[arg(short = 'p', long = "port", default_value = "80")]
+        port: u16,
+    }
+}
+
+#[derive(Subcommand, Debug, Clone)]
+enum JsonCommands {
+    Extract{
+        #[arg(short = 'p', long = "prop")]
+        property: String
+    }
 }
 
 #[tokio::main]
@@ -163,7 +178,16 @@ async fn main() {
         Commands::Http(sub_command) => match sub_command {
             HttpCommands::Get { url } => {
                 http_commands::http_get_request(url).await
+            },
+            HttpCommands::Serve { port } => {
+                http_commands::http_serve(port).await
             }
+        },
+
+        Commands::Json(sub_command) => match sub_command {
+            JsonCommands::Extract { property } => {
+                json_commands::json_extract(property).await
+            },
         },
     }
 }
