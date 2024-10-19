@@ -3,15 +3,27 @@ A CLI toolkit featuring a variety of helpful utilities.
 
 ## Commands:
 ```
+  aid http     HTTP functions
   aid ip       IP information / scanning
   aid port     Port information / scanning
   aid cpu      System cpu information
   aid mem      System memory information
   aid disk     System disk information
   aid network  System network information
-  aid http     HTTP functions
   aid json     JSON parsing / extraction functions
   aid help     Print this message or the help of the given subcommand(s)
+```
+
+## aid http
+```
+  aid http req    Make a HTTP request
+            -m, --method <METHOD>  Specify the HTTP method (e.g., GET, POST).
+            -u, --url <URL>        Specify the URL for the HTTP request.
+            -c, --config <CONFIG>  Path to a configuration file for the request. Specify: method, url, body, headers in json format.
+            -o, --output <OUTPUT>  If specified saves http response body to a file at the given path.
+            
+  aid http serve  Start a HTTP server (GET: 0.0.0.0:80 -> 'Hello, World!')
+            -p, --port <PORT>  Specify the port for the HTTP server (default is 80). [default: 80]
 ```
 
 ## aid ip 
@@ -67,16 +79,7 @@ A CLI toolkit featuring a variety of helpful utilities.
   aid network info  Show network information
             -j, --json  Output network information in JSON format.
 ```
-## aid http
-```
-  aid http req    Make a HTTP request
-            -m, --method <METHOD>  Specify the HTTP method (e.g., GET, POST).
-            -u, --url <URL>        Specify the URL for the HTTP request.
-            -c, --config <CONFIG>  Path to a configuration file for the request. Specify: method, url, body, headers in json format.
 
-  aid http serve  Start a HTTP server (GET: 0.0.0.0:80 -> 'Hello, World!')
-            -p, --port <PORT>  Specify the port for the HTTP server (default is 80). [default: 80]
-```
 ## aid json
 ```
   aid json extract  Extract a property from JSON data

@@ -25,7 +25,10 @@ async fn read_config_file(file_path: &str) -> Result<HttpRequestConfig, String> 
 }
 
 // Main function to send HTTP requests
-pub async fn http_request(method: Option<String>, url: Option<String>, config_path: Option<String>) {
+pub async fn http_request(method: Option<String>, 
+    url: Option<String>, 
+    config_path: Option<String>,
+    output: Option<String>) {
     let mut config: HttpRequestConfig = HttpRequestConfig {
         method: None,
         url: None,
@@ -118,7 +121,7 @@ pub async fn http_request(method: Option<String>, url: Option<String>, config_pa
 
         // Send the request and handle the response
         match builder.send().await {
-            Ok(response) => handle_response(response).await,
+            Ok(response) => handle_response(response, output).await,
             Err(e) => {
                 eprintln!("Http request failed: {}", e);
             }
@@ -129,12 +132,20 @@ pub async fn http_request(method: Option<String>, url: Option<String>, config_pa
 }
 
 // Function to handle HTTP response
-async fn handle_response(response: reqwest::Response) {
+async fn handle_response(response: reqwest::Response, output: Option<String>) {
     if response.status().is_success() {
-        match response.text().await {
-            Ok(text) => println!("{}", text),
-            Err(e) => eprintln!("Failed to read response: {}", e),
+        if let Some(output) = output{
+            let bytes = response.bytes().await.unwrap();
+            let mut file = File::create(&output).await.map_err(|e| format!("Failed to create file: {}", e)).unwrap();
+            file.write_all(&bytes).await.unwrap();
+            println!("Downloaded file to: {}", output);
+        }else{
+            match response.text().await {
+                Ok(text) => println!("{}", text),
+                Err(e) => eprintln!("Failed to read response: {}", e),
+            }
         }
+
     } else {
         eprintln!("Request failed with status: {}", response.status());
     }

@@ -20,6 +20,8 @@ struct Args {
 
 #[derive(Subcommand, Debug, Clone)]
 enum Commands {
+    #[command(subcommand, about="HTTP functions")]
+    Http(HttpCommands),
     #[command(subcommand, about="IP information / scanning")]
     Ip(IpCommands),
     #[command(subcommand, about="Port information / scanning")]
@@ -32,8 +34,6 @@ enum Commands {
     Disk(DiskCommands),
     #[command(subcommand, about="System network information")]
     Network(NetworkCommands),
-    #[command(subcommand, about="HTTP functions")]
-    Http(HttpCommands),
     #[command(subcommand, about="JSON parsing / extraction functions")]
     Json(JsonCommands),
 }
@@ -175,6 +175,10 @@ enum HttpCommands {
         #[arg(short = 'c', long = "config", 
                help = "Path to a configuration file for the request. Specify: method, url, body, headers in json format.")]
         config: Option<String>,
+
+        #[arg(short = 'o', long = "output", 
+        help = "If specified saves http response body to a file at the given path.")]
+        output: Option<String>,
     },
     
     #[command(about="Start a HTTP server (GET: 0.0.0.0:80 -> 'Hello, World!')")]
@@ -231,8 +235,8 @@ async fn main() {
             }
         },
         Commands::Http(sub_command) => match sub_command {
-            HttpCommands::Req { method, url, config } => {
-                http_commands::http_request(method, url, config).await
+            HttpCommands::Req { method, url, config, output } => {
+                http_commands::http_request(method, url, config, output).await
             },
             HttpCommands::Serve { port } => {
                 http_commands::http_serve(port).await
