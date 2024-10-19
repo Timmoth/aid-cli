@@ -61,42 +61,19 @@ pub async fn ip_public(json: bool) {
     }
 }
 
-pub async fn ip_scan(ip: Option<String>, json: bool) {
+pub async fn ip_scan(ip_str: Option<String>, json: bool) {
     let timeout = Duration::from_millis(100);
 
-    let target = if let Some(t) = ip {
-        if !t.is_empty() {
-            // If the provided IP is not empty, use it
-            t
-        } else {
-            // If the provided IP is empty, fetch the local IP
-            match ip_utils::get_local_ip().await {
-                Ok(addr) => addr.to_string(),
-                Err(e) => {
-                    eprintln!("Failed to get local address: {}", e);
-                    return;
-                }
-            }
-        }
-    } else {
-        // If ip is None, fetch the local IP
-        match ip_utils::get_local_ip().await {
-            Ok(addr) => addr.to_string(),
-            Err(e) => {
-                eprintln!("Failed to get local address: {}", e);
-                return;
-            }
-        }
-    };
+    let ip_str = ip_utils::to_ip_or_local(ip_str).await;
 
-  let ping_tasks: Vec<JoinHandle<Option<(Ipv4Addr, Duration)>>> = (0..255)
+    let ping_tasks: Vec<JoinHandle<Option<(Ipv4Addr, Duration)>>> = (0..255)
         .filter_map(|i| {
             // Split the IP into segments
-            let mut segments: Vec<String> = target.split('.').map(|s| s.to_string()).collect();
+            let mut segments: Vec<String> = ip_str.split('.').map(|s| s.to_string()).collect();
 
             // Make sure it's a valid IPv4 address (i.e., has 4 segments)
             if segments.len() != 4 {
-                eprintln!("Invalid IP format: {}", target);
+                eprintln!("Invalid IP format: {}", ip_str);
                 return None;
             }
             

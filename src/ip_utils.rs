@@ -109,3 +109,21 @@ pub async fn get_local_ip() -> Result<IpAddr, std::io::Error>  {
     let socket_addr = socket.local_addr()?;
     return Ok(socket_addr.ip());
 }
+
+pub async fn to_ip_or_local(ip: Option<String>) -> String {
+    // Check if the provided IP is Some and non-empty
+    if let Some(t) = ip {
+        if !t.is_empty() {
+            return t; // Return the provided IP
+        }
+    }
+
+    // If the provided IP is None or empty, get the local IP
+    match get_local_ip().await {
+        Ok(addr) => addr.to_string(), // Return the local address as a string
+        Err(e) => {
+            eprintln!("Failed to get local address: {}", e);
+            String::from("127.0.0.1") // Return a default value if an error occurs
+        }
+    }
+}

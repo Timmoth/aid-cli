@@ -16,7 +16,10 @@ struct MultiPortResponse {
     ports: Vec<u16>,
 }
 
-pub async fn port_scan(ip_str: String, json: bool) {
+pub async fn port_scan(ip_str: Option<String>, json: bool) {
+
+    let ip_str = ip_utils::to_ip_or_local(ip_str).await;
+
     let ip = match Ipv4Addr::from_str(&ip_str) {
         Ok(s) => s,
         Err(e) => {
@@ -59,7 +62,10 @@ pub async fn port_scan(ip_str: String, json: bool) {
     }
 }
 
-pub async fn port_status(ip_str: String, port: u16, json: bool) {
+pub async fn port_status(ip_str:  Option<String>, port: u16, json: bool) {
+
+    let ip_str = ip_utils::to_ip_or_local(ip_str).await;
+
     let ip = match Ipv4Addr::from_str(&ip_str) {
         Ok(s) => s,
         Err(e) => {

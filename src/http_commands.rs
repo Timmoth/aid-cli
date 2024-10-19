@@ -1,5 +1,5 @@
 use reqwest;
-use tokio::net::{TcpListener, TcpStream};
+use tokio::net::TcpListener;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use std::str;
 
@@ -14,7 +14,7 @@ pub async fn http_get_request(url: String) {
 }
 
 pub async fn http_serve(port: u16) {
-    let addr = format!("127.0.0.1:{}", port);
+    let addr = format!("0.0.0.0:{}", port);
     let listener = TcpListener::bind(&addr).await.unwrap();
     println!("Server listening on http://{}", addr);
 

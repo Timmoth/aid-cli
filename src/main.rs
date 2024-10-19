@@ -66,7 +66,7 @@ enum IpCommands {
 enum PortCommands {
     Status {
         #[arg(short = 'i', long = "ip")]
-        ip: String,
+        ip: Option<String>,
         #[arg(short = 'p')]
         port: u16,
         #[arg(short = 'j', long = "json", action = clap::ArgAction::SetTrue)]
@@ -74,7 +74,7 @@ enum PortCommands {
     },
     Scan {
         #[arg(short = 'i', long = "ip")]
-        ip: String,
+        ip: Option<String>,
         #[arg(short = 'j', long = "json", action = clap::ArgAction::SetTrue)]
         json: bool,
     },
