@@ -10,6 +10,8 @@ mod disk_commands;
 mod network_commands;
 mod http_commands;
 mod json_commands;
+mod csv_commands;
+mod csv_utils;
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
@@ -36,6 +38,8 @@ enum Commands {
     Network(NetworkCommands),
     #[command(subcommand, about="JSON parsing / extraction functions")]
     Json(JsonCommands),
+    #[command(subcommand, about="CSV searching / filtering")]
+    Csv(CsvCommands),
 }
 #[derive(Subcommand, Debug, Clone)]
 enum IpCommands {
@@ -199,6 +203,19 @@ enum JsonCommands {
     },
 }
 
+#[derive(Subcommand, Debug, Clone)]
+enum CsvCommands {
+    #[command(about="Sql search over csv")]
+    Search {
+        #[arg(short = 's', long = "sql", 
+               help = "Sql query.")]
+        sql: String,
+        #[arg(short = 'o', long = "output", 
+               help = "Output file path.")]
+        output: Option<String>,
+    },
+}
+
 #[tokio::main]
 async fn main() {
     let args = Args::parse();
@@ -246,6 +263,12 @@ async fn main() {
         Commands::Json(sub_command) => match sub_command {
             JsonCommands::Extract { property } => {
                 json_commands::json_extract(property).await
+            },
+        },
+
+        Commands::Csv(sub_command) => match sub_command {
+            CsvCommands::Search { sql, output } => {
+                csv_commands::sql_search(sql, output).await
             },
         },
     }

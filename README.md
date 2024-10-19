@@ -41,6 +41,7 @@ cargo build --release
   aid disk     System disk information
   aid network  System network information
   aid json     JSON parsing / extraction functions
+  aid csv      CSV search / transformation functions
   aid help     Print this message or the help of the given subcommand(s)
 ```
 
@@ -114,4 +115,11 @@ cargo build --release
 ```
   aid json extract  Extract a property from JSON data
             -p, --prop <PROPERTY>  Specify the property to extract from the JSON.
+```
+
+## aid csv
+```
+  aid csv search  Sql search over csv
+            -s, --sql <SQL>        Sql query e.g SELECT 'first name',age FROM people.csv WHERE age >= 25 AND age < 30 ORDER BY 'age' ASC.
+            -o, --output <OUTPUT>  Output file path.
 ```
