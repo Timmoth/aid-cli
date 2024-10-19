@@ -1,30 +1,84 @@
 # aid-cli
 A CLI toolkit featuring a variety of helpful utilities.
 
-## Networking
-| command          | options                          | outputs                                            |
-|------------------|----------------------------------|----------------------------------------------------|
-| aid ip local     | -j, --json                       | your local ip address                              |
-| aid ip public    | -j, --json                       | your public ip address                             |
-| aid ip scan      | -i, --ip, -j, --json             | scans for all hosts for on given subnet            |
-| aid ip status    | -i, --ip, -j, --json             | checks if you can connect to a given ip            |
-| aid port scan    | -i, --ip, -j, --json             | returns all open ports for a given ip              |
-| aid port status  | -i, --ip, -p, --port, -j, --json | checks if a given ip / port is open                |
-| aid network info | -j, --json                       | network device info                                |
-| aid http get     | -u --url                         | http response body text                            |
-| aid http serve   | -u --url                         | runs a simple http webserver at the specified port |
+## Commands:
+```
+  aid ip       IP information / scanning
+  aid port     Port information / scanning
+  aid cpu      System cpu information
+  aid mem      System memory information
+  aid disk     System disk information
+  aid network  System network information
+  aid http     HTTP functions
+  aid json     JSON parsing / extraction functions
+  aid help     Print this message or the help of the given subcommand(s)
+```
 
-## System
+## aid ip 
+```
+  aid ip local   Show my local IP address
+            -j, --json  Output the local IP address in JSON format.
 
-| command       | options                 | outputs              |
-|---------------|-------------------------|----------------------|
-| aid cpu usage | -w, --watch, -j, --json | system cpu usage     |
-| aid mem usage | -w, --watch, -j, --json | sytstem memory usage |
-| aid cpu into  | -j, --json              | cpu info             |
-| aid disk into | -j, --json              | disk info            |
+  aid ip public  Show my public IP address
+            -j, --json  Output the local IP address in JSON format.
 
-## Text
+  aid ip scan    Scan a specified IP address subnet for active ip addresses
+            -i, --ip <IP>  The IP subnet to scan. If not provided, the local subnet will be used. [default: ]        
+            -j, --json     Output scan results in JSON format.
 
-| command          | options    | outputs                                                              |
-|------------------|------------|----------------------------------------------------------------------|
-| aid json extract | -p, --prop | extracts the value from the specified property of a piped json input |
+  aid ip status  Try to connect to the specified IP address
+            -i, --ip <IP>  The IP address to check the status of.
+            -j, --json     Output status in JSON format.
+```
+
+## aid port
+```
+  aid port status  Check if the specified port is 'open' or 'closed'.
+            -i, --ip <IP>  The IP address to check (optional).
+            -p <PORT>      The port number to check the status of.
+            -j, --json     Output port status in JSON format.
+
+  aid port scan    Scan for open ports on a specified IP address
+            -i, --ip <IP>  The IP address to scan (optional).
+            -j, --json     Output scan results in JSON format.
+```
+## aid cpu
+```
+  aid cpu info   Show CPU information
+            -j, --json  Output CPU information in JSON format.
+
+  aid cpu usage  Monitor CPU usage
+            -w, --watch  Continuously monitor CPU usage.
+            -j, --json   Output CPU usage in JSON format.
+```
+## aid mem
+```
+  aid mem usage  Monitor memory usage
+            -w, --watch  Continuously monitor memory usage.
+            -j, --json   Output memory usage in JSON format.
+```
+## aid disk
+```
+  aid disk info  Show disk information
+            -j, --json  Output disk information in JSON format.
+```
+## aid network
+```
+  aid network info  Show network information
+            -j, --json  Output network information in JSON format.
+```
+## aid http
+```
+  aid http req    Make a HTTP request
+            -m, --method <METHOD>  Specify the HTTP method (e.g., GET, POST).
+            -u, --url <URL>        Specify the URL for the HTTP request.
+            -c, --config <CONFIG>  Path to a configuration file for the request. Specify: method, url, body, headers in json format.
+
+  aid http serve  Start a HTTP server (GET: 0.0.0.0:80 -> 'Hello, World!')
+            -p, --port <PORT>  Specify the port for the HTTP server (default is 80). [default: 80]
+```
+## aid json
+```
+  aid json extract  Extract a property from JSON data
+            -p, --prop <PROPERTY>  Specify the property to extract from the JSON.
+```

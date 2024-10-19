@@ -20,124 +20,179 @@ struct Args {
 
 #[derive(Subcommand, Debug, Clone)]
 enum Commands {
-    #[command(subcommand)]
+    #[command(subcommand, about="IP information / scanning")]
     Ip(IpCommands),
-    #[command(subcommand)]
+    #[command(subcommand, about="Port information / scanning")]
     Port(PortCommands),
-    #[command(subcommand)]
+    #[command(subcommand, about="System cpu information")]
     Cpu(CpuCommands),
-    #[command(subcommand)]
+    #[command(subcommand, about="System memory information")]
     Mem(MemoryCommands),
-    #[command(subcommand)]
+    #[command(subcommand, about="System disk information")]
     Disk(DiskCommands),
-    #[command(subcommand)]
+    #[command(subcommand, about="System network information")]
     Network(NetworkCommands),
-    #[command(subcommand)]
+    #[command(subcommand, about="HTTP functions")]
     Http(HttpCommands),
-    #[command(subcommand)]
+    #[command(subcommand, about="JSON parsing / extraction functions")]
     Json(JsonCommands),
 }
-
 #[derive(Subcommand, Debug, Clone)]
 enum IpCommands {
+    #[command(about="Show my local IP address")]
     Local {
-        #[arg(short = 'j', long = "json", action = clap::ArgAction::SetTrue)]
+        #[arg(short = 'j', long = "json", action = clap::ArgAction::SetTrue, 
+               help = "Output the local IP address in JSON format.")]
         json: bool,
     },
+    
+    #[command(about="Show my public IP address")]
     Public {
-        #[arg(short = 'j', long = "json", action = clap::ArgAction::SetTrue)]
+        #[arg(short = 'j', long = "json", action = clap::ArgAction::SetTrue,
+               help = "Output the public IP address in JSON format.")]
         json: bool,
     },
+    
+    #[command(about="Scan a specified IP address subnet for active ip addresses")]
     Scan {
-        #[arg(short = 'i', long = "ip", default_value = "")]
+        #[arg(short = 'i', long = "ip", default_value = "",
+               help = "The IP subnet to scan. If not provided, the local subnet will be used.")]
         ip: Option<String>,
-        #[arg(short = 'j', long = "json", action = clap::ArgAction::SetTrue)]
+        
+        #[arg(short = 'j', long = "json", action = clap::ArgAction::SetTrue,
+               help = "Output scan results in JSON format.")]
         json: bool,
     },
+
+    #[command(about="Try to connect to the specified IP address")]
     Status {
-        #[arg(short = 'i', long = "ip")]
+        #[arg(short = 'i', long = "ip", 
+               help = "The IP address to check the status of.")]
         ip: String,
-        #[arg(short = 'j', long = "json", action = clap::ArgAction::SetTrue)]
+        
+        #[arg(short = 'j', long = "json", action = clap::ArgAction::SetTrue,
+               help = "Output status in JSON format.")]
         json: bool,
     },
 }
 
 #[derive(Subcommand, Debug, Clone)]
 enum PortCommands {
+    #[command(about="Check if the specified port is 'open' or 'closed'.")]
     Status {
-        #[arg(short = 'i', long = "ip")]
+        #[arg(short = 'i', long = "ip", 
+               help = "The IP address to check (optional).")]
         ip: Option<String>,
-        #[arg(short = 'p')]
+        
+        #[arg(short = 'p', 
+               help = "The port number to check the status of.")]
         port: u16,
-        #[arg(short = 'j', long = "json", action = clap::ArgAction::SetTrue)]
+        
+        #[arg(short = 'j', long = "json", action = clap::ArgAction::SetTrue,
+               help = "Output port status in JSON format.")]
         json: bool,
     },
+    
+    #[command(about="Scan for open ports on a specified IP address")]
     Scan {
-        #[arg(short = 'i', long = "ip")]
+        #[arg(short = 'i', long = "ip", 
+               help = "The IP address to scan (optional).")]
         ip: Option<String>,
-        #[arg(short = 'j', long = "json", action = clap::ArgAction::SetTrue)]
+        
+        #[arg(short = 'j', long = "json", action = clap::ArgAction::SetTrue,
+               help = "Output scan results in JSON format.")]
         json: bool,
     },
 }
 
 #[derive(Subcommand, Debug, Clone)]
 enum CpuCommands {
+    #[command(about="Show CPU information")]
     Info {
-        #[arg(short = 'j', long = "json", action = clap::ArgAction::SetTrue)]
+        #[arg(short = 'j', long = "json", action = clap::ArgAction::SetTrue,
+               help = "Output CPU information in JSON format.")]
         json: bool,
     },
+    
+    #[command(about="Monitor CPU usage")]
     Usage {
-        #[arg(short = 'w', long = "watch", action = clap::ArgAction::SetTrue)]
+        #[arg(short = 'w', long = "watch", action = clap::ArgAction::SetTrue,
+               help = "Continuously monitor CPU usage.")]
         watch: bool,
-        #[arg(short = 'j', long = "json", action = clap::ArgAction::SetTrue)]
+        
+        #[arg(short = 'j', long = "json", action = clap::ArgAction::SetTrue,
+               help = "Output CPU usage in JSON format.")]
         json: bool,
     },
 }
 
 #[derive(Subcommand, Debug, Clone)]
 enum MemoryCommands {
+    #[command(about="Monitor memory usage")]
     Usage {
-        #[arg(short = 'w', long = "watch", action = clap::ArgAction::SetTrue)]
+        #[arg(short = 'w', long = "watch", action = clap::ArgAction::SetTrue,
+               help = "Continuously monitor memory usage.")]
         watch: bool,
-        #[arg(short = 'j', long = "json", action = clap::ArgAction::SetTrue)]
+        
+        #[arg(short = 'j', long = "json", action = clap::ArgAction::SetTrue,
+               help = "Output memory usage in JSON format.")]
         json: bool,
     },
 }
 
 #[derive(Subcommand, Debug, Clone)]
 enum DiskCommands {
+    #[command(about="Show disk information")]
     Info {
-        #[arg(short = 'j', long = "json", action = clap::ArgAction::SetTrue)]
+        #[arg(short = 'j', long = "json", action = clap::ArgAction::SetTrue,
+               help = "Output disk information in JSON format.")]
         json: bool,
     },
 }
 
 #[derive(Subcommand, Debug, Clone)]
 enum NetworkCommands {
+    #[command(about="Show network information")]
     Info {
-        #[arg(short = 'j', long = "json", action = clap::ArgAction::SetTrue)]
+        #[arg(short = 'j', long = "json", action = clap::ArgAction::SetTrue,
+               help = "Output network information in JSON format.")]
         json: bool,
     },
 }
 
 #[derive(Subcommand, Debug, Clone)]
 enum HttpCommands {
-    Get {
-        #[arg(short = 'u', long = "url")]
-        url: String,
+    #[command(about="Make a HTTP request")]
+    Req {
+        #[arg(short = 'm', long = "method", 
+               help = "Specify the HTTP method (e.g., GET, POST).")]
+        method: Option<String>,
+        
+        #[arg(short = 'u', long = "url", 
+               help = "Specify the URL for the HTTP request.")]
+        url: Option<String>,
+        
+        #[arg(short = 'c', long = "config", 
+               help = "Path to a configuration file for the request. Specify: method, url, body, headers in json format.")]
+        config: Option<String>,
     },
-    Serve{
-        #[arg(short = 'p', long = "port", default_value = "80")]
+    
+    #[command(about="Start a HTTP server (GET: 0.0.0.0:80 -> 'Hello, World!')")]
+    Serve {
+        #[arg(short = 'p', long = "port", default_value = "80", 
+               help = "Specify the port for the HTTP server (default is 80).")]
         port: u16,
-    }
+    },
 }
 
 #[derive(Subcommand, Debug, Clone)]
 enum JsonCommands {
-    Extract{
-        #[arg(short = 'p', long = "prop")]
-        property: String
-    }
+    #[command(about="Extract a property from JSON data")]
+    Extract {
+        #[arg(short = 'p', long = "prop", 
+               help = "Specify the property to extract from the JSON.")]
+        property: String,
+    },
 }
 
 #[tokio::main]
@@ -176,8 +231,8 @@ async fn main() {
             }
         },
         Commands::Http(sub_command) => match sub_command {
-            HttpCommands::Get { url } => {
-                http_commands::http_get_request(url).await
+            HttpCommands::Req { method, url, config } => {
+                http_commands::http_request(method, url, config).await
             },
             HttpCommands::Serve { port } => {
                 http_commands::http_serve(port).await
