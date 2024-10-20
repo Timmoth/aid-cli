@@ -122,7 +122,7 @@ cargo build --release
   aid json extract      Extract a property from JSON data
             -p, --prop <PROPERTY>  Specify the property to extract from the JSON.
   aid json jwt-decode   Decode a JWT
-            -j, --jwt <PROPERTY>  Specify JWT to decode.
+            -j, --jwt <TOKEN>  Specify JWT to decode.
 ```
 
 ## aid csv
@@ -138,6 +138,12 @@ cargo build --release
             -i, --input <INPUT>   Input text to base64 encode.
   aid text base64-decode  decodes a base64 string
             -i, --input <INPUT>   Input text to base64 decode.
+  aid text lines  reads and prints lines from a text file
+           -i, --input <FILE>   Input text file to search.
+           -s, --start <START>  first line to print      
+           -e, --end <END>      last line to print       
+           -f, --first <HEAD>   number of lines from the start of the file to print
+           -l, --last <TAIL>    number of lines from the end of the file to print
 ```
 
 ## aid file
