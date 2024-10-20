@@ -11,3 +11,4 @@ pub mod http_commands;
 pub mod json_commands;
 pub mod csv_commands;
 pub mod text_commands;
+pub mod file_commands;

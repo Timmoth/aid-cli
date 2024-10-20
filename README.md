@@ -49,6 +49,7 @@ cargo build --release
   aid json     JSON parsing / extraction functions
   aid csv      CSV search / transformation functions
   aid text     Text manipulation functions
+  aid file     File info functions
   aid help     Print this message or the help of the given subcommand(s)
 ```
 
@@ -139,4 +140,16 @@ cargo build --release
             -i, --input <INPUT>   Input text to base64 encode.
   aid text base64-decode  decodes a base64 string
             -i, --input <INPUT>   Input text to base64 decode.
+```
+
+## aid file
+```
+  aid file info  prints file metadata
+            -f, --file <FILE>   file path.
+  aid file md5  calculates the files Md5 checksum
+            -f, --file <FILE>   file path.
+  aid file sha1  calculates the files Sha1 checksum
+            -f, --file <FILE>   file path.
+  aid file sha256  calculates the files Sha256 checksum
+            -f, --file <FILE>   file path.
 ```
