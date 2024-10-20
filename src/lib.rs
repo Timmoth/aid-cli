@@ -10,3 +10,4 @@ pub mod network_commands;
 pub mod http_commands;
 pub mod json_commands;
 pub mod csv_commands;
+pub mod text_commands;

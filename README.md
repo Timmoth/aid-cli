@@ -42,6 +42,7 @@ cargo build --release
   aid network  System network information
   aid json     JSON parsing / extraction functions
   aid csv      CSV search / transformation functions
+  aid text     Text manipulation functions
   aid help     Print this message or the help of the given subcommand(s)
 ```
 
@@ -124,4 +125,12 @@ cargo build --release
   aid csv search  Sql search over csv
             -s, --sql <SQL>        Sql query e.g SELECT 'first name',age FROM people.csv WHERE age >= 25 AND age < 30 ORDER BY 'age' ASC.
             -o, --output <OUTPUT>  Output file path.
+```
+
+## aid text
+```
+  aid text base64-encode  encodes a base64 string
+            -i, --input <INPUT>   Input text to base64 encode.
+  aid text base64-decode  decodes a base64 string
+            -i, --input <INPUT>   Input text to base64 decode.
 ```

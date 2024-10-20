@@ -1,4 +1,4 @@
-use aid::{ip_commands, port_commands, cpu_commands, csv_commands, disk_commands, json_commands, mem_commands, network_commands, http_commands};
+use aid::{cpu_commands, csv_commands, disk_commands, http_commands, ip_commands, json_commands, mem_commands, network_commands, port_commands, text_commands};
 use clap::{Parser, Subcommand};
 
 #[derive(Parser)]
@@ -28,6 +28,8 @@ enum Commands {
     Json(JsonCommands),
     #[command(subcommand, about="CSV searching / filtering")]
     Csv(CsvCommands),
+    #[command(subcommand, about="Text manipulation functions")]
+    Text(TextCommands),
 }
 #[derive(Subcommand, Debug, Clone)]
 enum IpCommands {
@@ -210,6 +212,23 @@ enum CsvCommands {
     },
 }
 
+#[derive(Subcommand, Debug, Clone)]
+enum TextCommands {
+    #[command(about="base64 encode")]
+    Base64Encode {
+        #[arg(short = 'i', long = "input", 
+               help = "Input text to base64 encode.")]
+        input: String,
+    },
+
+    #[command(about="base64 decode")]
+    Base64Decode {
+        #[arg(short = 'i', long = "input", 
+               help = "Input text to base 64 decode.")]
+        input: String,
+    },
+}
+
 #[tokio::main]
 async fn main() {
     let args = Args::parse();
@@ -266,6 +285,15 @@ async fn main() {
         Commands::Csv(sub_command) => match sub_command {
             CsvCommands::Search { sql, output } => {
                 csv_commands::sql_search(sql, output).await
+            },
+        },
+
+        Commands::Text(sub_command) => match sub_command {
+            TextCommands::Base64Encode { input } => {
+                text_commands::base64_encode(input)
+            },
+            TextCommands::Base64Decode { input } => {
+                text_commands::base64_decode(input)
             },
         },
     }
