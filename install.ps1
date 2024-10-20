@@ -1,5 +1,5 @@
 # Set the download URL and target path
-$downloadUrl = "https://github.com/Timmoth/aid-cli/releases/download/aid-0.1.0/aid-win.exe"
+$downloadUrl = "https://github.com/Timmoth/aid-cli/releases/download/aid-0.1.1/aid-win.exe"
 $installDir = "C:\Program Files\AidCLI"
 $filename = "aid.exe"
 
