@@ -189,6 +189,12 @@ enum JsonCommands {
                help = "Specify the property to extract from the JSON.")]
         property: String,
     },
+    #[command(about="Decode a JWT")]
+    JwtDecode {
+        #[arg(short = 'j', long = "jwt", 
+               help = "Specify JWT to decode.")]
+        jwt: String,
+    },
 }
 
 #[derive(Subcommand, Debug, Clone)]
@@ -251,6 +257,9 @@ async fn main() {
         Commands::Json(sub_command) => match sub_command {
             JsonCommands::Extract { property } => {
                 json_commands::json_extract(property).await
+            },
+            JsonCommands::JwtDecode { jwt } => {
+                json_commands::json_decode_jwt(&jwt)
             },
         },
 
