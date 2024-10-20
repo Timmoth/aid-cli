@@ -36,17 +36,20 @@ pub async fn sql_search(sql: String, output_path: Option<String>) {
     let start = Instant::now();
 
     // Apply the query
-    let results = csv_utils::apply_query(&headers, records, &query);
+    let (result_headers, result_rows) = csv_utils::apply_query(&headers, records, &query);
     let query_time = start.elapsed();
-    let result_rows = results.len();
+    let result_row_count = result_rows.len();
 
-    output_results(results, &query.columns, &output_path);
+    output_results(result_rows, &result_headers, &output_path);
+      println!("Parsed {:?} in {:?}", query, parse_time);
+        println!("Loaded {} rows in {:?}", rows, load_time);
+        println!("Found {} rows in {:?}", result_row_count, query_time);
 
     if output_path.is_some() {
         // Log the query statistics
         println!("Parsed {:?} in {:?}", query, parse_time);
         println!("Loaded {} rows in {:?}", rows, load_time);
-        println!("Found {} rows in {:?}", result_rows, query_time);
+        println!("Found {} rows in {:?}", result_row_count, query_time);
     }
 }
 
@@ -63,17 +66,15 @@ fn output_results(results: Vec<Vec<String>>, headers: &Vec<String>, output_path:
                 Ok(file) => {
                     let mut wtr = Writer::from_writer(file);
 
-                    // Write headers to the CSV
+                    // Write headers to the CSV if provided
                     if let Err(e) = wtr.write_record(headers) {
-                        eprintln!("Failed to write headers to file: {}", e);
-                        return;
-                    }
+                            eprintln!("Failed to write headers to file: {}", e);
+                            return;
+                        }
 
                     // Write each row of results to the CSV
                     for row in results.iter() {
                         if let Err(e) = wtr.write_record(row) {
-
-                            println!("{:?}", row);
                             eprintln!("Failed to write row to file: {}", e);
                             return;
                         }
@@ -92,7 +93,11 @@ fn output_results(results: Vec<Vec<String>>, headers: &Vec<String>, output_path:
         }
 
         None => {
-            println!("{:?}", headers);
+            // Print headers if they are available
+            println!("{}", headers.join(","));
+
+
+            // Print each row of results
             for row in results.iter() {
                 println!("{}", row.join(","));
             }

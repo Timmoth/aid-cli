@@ -21,3 +21,4 @@ Cargo.lock
 #.idea/
 req.json
 test.csv
+data.csv

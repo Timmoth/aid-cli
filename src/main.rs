@@ -1,17 +1,5 @@
+use aid::{ip_commands, port_commands, cpu_commands, csv_commands, disk_commands, json_commands, mem_commands, network_commands, http_commands};
 use clap::{Parser, Subcommand};
-
-mod cpu_commands;
-mod format_utils;
-mod ip_commands;
-mod ip_utils;
-mod mem_commands;
-mod port_commands;
-mod disk_commands;
-mod network_commands;
-mod http_commands;
-mod json_commands;
-mod csv_commands;
-mod csv_utils;
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
