@@ -295,6 +295,14 @@ enum FileCommands {
         #[arg(short = 'f', long = "file", help = "Input file.")]
         file: String,
     },
+
+    #[command(about = "zips the files in the source directory")]
+    Zip {
+        #[arg(short = 'd', long = "dir", help = "source directory.")]
+        dir: String,
+        #[arg(short = 'f', long = "file", help = "output zip file.")]
+        file: String,
+    },
 }
 
 #[tokio::main]
@@ -359,6 +367,8 @@ async fn main() {
             FileCommands::Md5 { file } => file_commands::md5_checksum(file),
             FileCommands::Sha1 { file } => file_commands::sha1_checksum(file),
             FileCommands::Sha256 { file } => file_commands::sha256_checksum(file),
+            FileCommands::Zip { dir, file } => file_commands::zip_directory(dir, file),
+
         },
     }
 }

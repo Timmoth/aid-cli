@@ -2,13 +2,66 @@ use md5::{Digest as Md5Digest, Md5};
 use sha1::Sha1;
 use sha2::Sha256;
 use std::fs::File;
-use std::io::{BufReader, Read};
+use std::io::{self, BufReader, Read};
 use std::path::Path;
 use std::time::UNIX_EPOCH;
 use time::OffsetDateTime;
+use std::io::Write;
+use zip::ZipWriter;
+use zip::write::{FileOptions, SimpleFileOptions};
+use walkdir::WalkDir;
 
 #[cfg(unix)]
 use std::os::unix::fs::PermissionsExt;
+
+pub fn zip_directory(dir_path: String, zip_file_path: String) {
+    // Create a new ZIP file
+    let zip_file = File::create(&zip_file_path);
+    if let Err(e) = zip_file {
+        eprintln!("Error creating zip file '{}': {}", zip_file_path, e);
+        return;
+    }
+    let zip_file = zip_file.unwrap();
+    
+    let mut zip_writer = ZipWriter::new(zip_file);
+    let options = SimpleFileOptions::default()
+        .compression_method(zip::CompressionMethod::Deflated)
+        .unix_permissions(0o755);
+    
+    // Walk through the directory
+    for entry in WalkDir::new(&dir_path) {
+        let entry = entry.unwrap(); // Handle errors with unwrap; you may want to log them instead
+        let path = entry.path();
+
+        // Only add files to the zip
+        if path.is_file() {
+            // Get relative path for the ZIP entry
+            let relative_path = path.strip_prefix(&dir_path).unwrap_or(path);
+            if let Err(e) = zip_writer.start_file(relative_path.to_string_lossy(), options) {
+                eprintln!("Error adding file to zip '{}': {}", relative_path.display(), e);
+                continue; // Skip to the next file
+            }
+
+            let file_reader = File::open(path);
+            match file_reader {
+                Ok(mut reader) => {
+                    if let Err(e) = io::copy(&mut reader, &mut zip_writer) {
+                        eprintln!("Error writing file to zip '{}': {}", relative_path.display(), e);
+                    }
+                }
+                Err(e) => {
+                    eprintln!("Error opening file '{}': {}", path.display(), e);
+                }
+            }
+        }
+    }
+
+    if let Err(e) = zip_writer.finish() {
+        eprintln!("Error finalizing zip file: {}", e);
+    } else {
+        println!("Successfully zipped directory '{}'", dir_path);
+    }
+}
 
 pub fn file_info(file_path: String) {
     let path = Path::new(&file_path);
