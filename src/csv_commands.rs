@@ -41,9 +41,6 @@ pub async fn sql_search(sql: String, output_path: Option<String>) {
     let result_row_count = result_rows.len();
 
     output_results(result_rows, &result_headers, &output_path);
-      println!("Parsed {:?} in {:?}", query, parse_time);
-        println!("Loaded {} rows in {:?}", rows, load_time);
-        println!("Found {} rows in {:?}", result_row_count, query_time);
 
     if output_path.is_some() {
         // Log the query statistics
