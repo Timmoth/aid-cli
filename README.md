@@ -1,6 +1,12 @@
 # aid-cli
 A CLI toolkit featuring a variety of helpful utilities.
 
+<p align="center">
+   <div style="width:640;height:320">
+       <img style="width: inherit" src="./banner.png">
+</div>
+</p>
+
 ## Installation
 
 Manual installation is simple, just download the release and add it to your PATH environment variable, if you'd like an even easier way i've added scripts to do it for you.
