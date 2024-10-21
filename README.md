@@ -5,6 +5,8 @@
 </p>
 A CLI toolkit featuring a variety of helpful utilities.
 
+## Read the [docs](https://timmoth.github.io/aid-cli/)
+
 ## Installation
 
 Manual installation is simple, just download the release and add it to your PATH environment variable, if you'd like an even easier way i've added scripts to do it for you.
@@ -23,7 +25,7 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
 ```
 
 ### Releases
-[Download the latest release v0.1.3 20/10/2024](https://github.com/Timmoth/aid-cli/releases/tag/aid-0.1.3)
+[Download the latest release](https://github.com/Timmoth/aid-cli/releases)
 
 ### Build
 If you'd like to build the latest version from source:
@@ -35,163 +37,60 @@ cargo build --release
 .\target\release\aid.exe
 ```
 
-## Commands:
+## Top level commands:
 ```
-  aid http     HTTP functions
-  aid ip       IP information / scanning
-  aid port     Port information / scanning
-  aid cpu      System cpu information
-  aid mem      System memory information
-  aid disk     System disk information
-  aid network  System network information
-  aid json     JSON parsing / extraction functions
-  aid csv      CSV search / transformation functions
-  aid text     Text manipulation functions
-  aid file     File info functions
-  aid time     Time related functions
-  aid bits     Bit manipulation functions
-  aid math     Math functions
-  aid help     Print this message or the help of the given subcommand(s)
+ | command     | description                                               |
+ |-------------|-----------------------------------------------------------|
+ | aid http    | HTTP functions                                            |
+ | aid ip      | IP information / scanning                                 |
+ | aid port    | Port information / scanning                               |
+ | aid cpu     | System cpu information                                    |
+ | aid mem     | System memory information                                 |
+ | aid disk    | System disk information                                   |
+ | aid network | System network information                                |
+ | aid json    | JSON parsing / extraction functions                       |
+ | aid csv     | CSV search / transformation functions                     |
+ | aid text    | Text manipulation functions                               |
+ | aid file    | File info functions                                       |
+ | aid time    | Time related functions                                    |
+ | aid bits    | Bit manipulation functions                                |
+ | aid math    | Math functions                                            |
+ | aid help    | Print this message or the help of the given subcommand(s) |
 ```
+## All commands:
 
-## aid http
 ```
-  aid http req    Make a HTTP request
-            -m, --method <METHOD>  Specify the HTTP method (e.g., GET, POST).
-            -u, --url <URL>        Specify the URL for the HTTP request.
-            -c, --config <CONFIG>  Path to a configuration file for the request. Specify: method, url, body, headers in json format.
-            -o, --output <OUTPUT>  If specified saves http response body to a file at the given path.
-            
-  aid http serve  Start a HTTP server (GET: 0.0.0.0:80 -> 'Hello, World!')
-            -p, --port <PORT>  Specify the port for the HTTP server (default is 80). [default: 80]
-```
-
-## aid ip 
-```
-  aid ip local   Show my local IP address
-            -j, --json  Output the local IP address in JSON format.
-
-  aid ip public  Show my public IP address
-            -j, --json  Output the local IP address in JSON format.
-
-  aid ip scan    Scan a specified IP address subnet for active ip addresses
-            -i, --ip <IP>  The IP subnet to scan. If not provided, the local subnet will be used. [default: ]        
-            -j, --json     Output scan results in JSON format.
-
-  aid ip status  Try to connect to the specified IP address
-            -i, --ip <IP>  The IP address to check the status of.
-            -j, --json     Output status in JSON format.
-```
-
-## aid port
-```
-  aid port status  Check if the specified port is 'open' or 'closed'.
-            -i, --ip <IP>  The IP address to check (optional).
-            -p <PORT>      The port number to check the status of.
-            -j, --json     Output port status in JSON format.
-
-  aid port scan    Scan for open ports on a specified IP address
-            -i, --ip <IP>  The IP address to scan (optional).
-            -j, --json     Output scan results in JSON format.
-```
-## aid cpu
-```
-  aid cpu info   Show CPU information
-            -j, --json  Output CPU information in JSON format.
-
-  aid cpu usage  Monitor CPU usage
-            -w, --watch  Continuously monitor CPU usage.
-            -j, --json   Output CPU usage in JSON format.
-```
-## aid mem
-```
-  aid mem usage  Monitor memory usage
-            -w, --watch  Continuously monitor memory usage.
-            -j, --json   Output memory usage in JSON format.
-```
-## aid disk
-```
-  aid disk info  Show disk information
-            -j, --json  Output disk information in JSON format.
-```
-## aid network
-```
-  aid network info  Show network information
-            -j, --json  Output network information in JSON format.
-```
-
-## aid json
-```
-  aid json extract      Extract a property from JSON data
-            -p, --prop <PROPERTY>  Specify the property to extract from the JSON.
-  aid json jwt-decode   Decode a JWT
-            -j, --jwt <TOKEN>  Specify JWT to decode.
-```
-
-## aid csv
-```
-  aid csv search  Sql search over csv
-            -s, --sql <SQL>        Sql query e.g SELECT 'first name',age FROM people.csv WHERE age >= 25 AND age < 30 ORDER BY 'age' ASC.
-            -o, --output <OUTPUT>  Output file path.
-```
-
-## aid text
-```
-  aid text base64-encode  encodes a base64 string
-            -i, --input <INPUT>   Input text to base64 encode.
-  aid text base64-decode  decodes a base64 string
-            -i, --input <INPUT>   Input text to base64 decode.
-  aid text lines  reads and prints lines from a text file
-           -i, --input <FILE>   Input text file to search.
-           -s, --start <START>  first line to print      
-           -e, --end <END>      last line to print       
-           -f, --first <HEAD>   number of lines from the start of the file to print
-           -l, --last <TAIL>    number of lines from the end of the file to print
-```
-
-## aid file
-```
-  aid file info  prints file metadata
-            -f, --file <FILE>   file path.
-  aid file md5  calculates the files Md5 checksum
-            -f, --file <FILE>   file path.
-  aid file sha1  calculates the files Sha1 checksum
-            -f, --file <FILE>   file path.
-  aid file sha256  calculates the files Sha256 checksum
-            -f, --file <FILE>   file path.
-  aid file zip  zips the files in the source directory
-            -d, --dir <DIRECTORY>   file path.
-            -f, --file <FILE>   output zip file.
-```
-
-## aid time
-```
-  aid time unix  Display unix timestamp
-            -m, --milli  Output the timestamp as unix milliseconds.
-  aid time dt  Display the datetime
-            -l, --local  Use the local datetime.
-            -r, --rfc   Output the datetime in Rfc3339 format.
-```
-
-## aid math
-```
-  aid time eval  Evaluates a math expression
-            -e, --exp <EXPRESSION>  Math expression to evaluate.
-```
-
-## aid bits
-```
-  aid bits board  Display the number in bitboard representation
-            -b, --bin <BINARY>   Display the binary value as a bitboard.
-            -d, --dec <DECIMAL>  Display the decimal value as a bitboard.
-                --hex <HEX>      Display the decimal value as a bitboard.
-  aid bits to-bin  Converts a number to it's binary representation
-            -d, --dec <DECIMAL>  Convert the decimal number to binary.
-                --hex <HEX>      Converts the hex number to binary.
-  aid bits to-dec  Converts a number to it's decimal representation
-            -b, --bin <BIN>  Converts the binary number to hedecimalx.
-                --hex <HEX>  Converts the hex number to decimal.
-  aid bits to-hex  Converts a number to it's hex representation
-            -d, --dec <DECIMAL>  Convert the decimal number to hex.
-            -b, --bin <BIN>      Converts the binary number to hex.
+| command                | description                                                |
+|------------------------|------------------------------------------------------------|
+| aid http req           | Make a HTTP request                                        |
+| aid http serve         | Start a dummy HTTP server                                  |
+| aid ip local           | Show my local IP address                                   |
+| aid ip public          | Show my public IP address                                  |
+| aid ip scan            | Scan a specified IP address subnet for active ip addresses |
+| aid ip status          | Try to connect to the specified IP address                 |
+| aid port status        | Check if the specified port is 'open' or 'closed'.         |
+| aid port scan          | Scan for open ports on a specified IP address              |
+| aid cpu info           | Show CPU information                                       |
+| aid cpu usage          | Monitor CPU usage                                          |
+| aid mem usage          | Monitor memory usage                                       |
+| aid disk info          | Show disk information                                      |
+| aid network info       | Show network information                                   |
+| aid json extract       | Extract a property from JSON data                          |
+| aid json jwt-decode    | Decode a JWT                                               |
+| aid csv search         | Sql search over csv                                        |
+| aid text base64-encode | encodes a base64 string                                    |
+| aid text base64-decode | decodes a base64 string                                    |
+| aid text lines         | reads and prints lines from a text file                    |
+| aid file info          | prints file metadata                                       |
+| aid file md5           | calculates the files Md5 checksum                          |
+| aid file sha1          | calculates the files Sha1 checksum                         |
+| aid file sha256        | calculates the files Sha256 checksum                       |
+| aid file zip           | zips the files in the source directory                     |
+| aid time unix          | Display unix timestamp                                     |
+| aid time dt            | Display the datetime                                       |
+| aid bits board         | Display the number in bitboard representation              |
+| aid bits to-bin        | Converts a number to it's binary representation            |
+| aid bits to-dec        | Converts a number to it's decimal representation           |
+| aid bits to-hex        | Converts a number to it's hex representation               |
+| aid time eval          | Evaluates a math expression                                |
 ```

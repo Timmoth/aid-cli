@@ -16,7 +16,7 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
 ```
 
 ### Releases
-[Download the latest release v0.1.3 20/10/2024](https://github.com/Timmoth/aid-cli/releases/tag/aid-0.1.3)
+[Download the latest release](https://github.com/Timmoth/aid-cli/releases)
 
 ### Build
 If you'd like to build the latest version from source:
