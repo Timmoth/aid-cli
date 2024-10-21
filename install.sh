@@ -3,9 +3,9 @@
 # Determine the operating system (Linux or macOS)
 OS="$(uname)"
 if [[ "$OS" == "Linux" ]]; then
-    URL="https://github.com/Timmoth/aid-cli/releases/download/aid-0.1.4/aid-linux"
+    URL="https://github.com/Timmoth/aid-cli/releases/download/aid-0.1.5/aid-linux"
 elif [[ "$OS" == "Darwin" ]]; then
-    URL="https://github.com/Timmoth/aid-cli/releases/download/aid-0.1.4/aid-mac"
+    URL="https://github.com/Timmoth/aid-cli/releases/download/aid-0.1.5/aid-mac"
 else
     echo "Error: Unsupported operating system."
     exit 1

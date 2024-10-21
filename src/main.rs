@@ -337,6 +337,17 @@ enum MathCommands {
         #[arg(short='e', long = "exp", help = "Math expression to evaluate.")]
         expression: String,
     },
+    #[command(about = "Plot a math expression")]
+    Plot {
+        #[arg(long = "start", help = "Start x coord.", allow_hyphen_values=true)]
+        startX: f32,
+            #[arg(long = "end", help = "End x coord.",allow_hyphen_values=true)]
+        endX: f32,
+            #[arg(short='s', long = "step", help = "x step size.",allow_hyphen_values=true)]
+        stepX: f32,
+            #[arg(short='e', long = "exp", help = "Math expression to plot.")]
+        expression: String,
+    },
 }
 
 #[derive(Subcommand, Debug, Clone)]
@@ -445,7 +456,7 @@ async fn main() {
         },
         Commands::Math(sub_command) => match sub_command {
             MathCommands::Eval { expression } => math_commands::evaluate(expression),
-
+            MathCommands::Plot { startX, endX, stepX, expression } => math_commands::plot(startX, endX, stepX, expression),
         },
           Commands::Bits(sub_command) => match sub_command{
                 BitsCommands::Board { binary, decimal, hex } => bits_commands::bitboard(binary, decimal, hex),

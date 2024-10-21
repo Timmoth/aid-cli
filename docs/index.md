@@ -55,7 +55,8 @@
 | aid bits to-bin        | Converts a number to it's binary representation            |
 | aid bits to-dec        | Converts a number to it's decimal representation           |
 | aid bits to-hex        | Converts a number to it's hex representation               |
-| aid time eval          | Evaluates a math expression                                |
+| aid math eval          | Evaluates a math expression                                |
+| aid math plot          | Plot a math expression                                     |
 ```
 
 # Support 🛟

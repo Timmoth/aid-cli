@@ -387,9 +387,6 @@ pub fn apply_query(
         }
     }
 
-    // Return the result rows along with the ordered headers for clarity
-    // If you need to return headers as well, you can do so or handle it in the output format
-    println!("Result Headers: {:?}", result_headers); // Debug output to see the header order
     (result_headers, result_rows)
 }
 

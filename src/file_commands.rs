@@ -145,7 +145,7 @@ pub fn md5_checksum(file_path: String) {
     }
 
     let md5_result = md5_hasher.finalize();
-    println!("MD5: {:x}", md5_result);
+    println!("{:x}", md5_result);
 }
 
 pub fn sha1_checksum(file_path: String) {
@@ -165,7 +165,7 @@ pub fn sha1_checksum(file_path: String) {
     }
 
     let sha1_result = sha1_hasher.finalize();
-    println!("SHA-1: {:x}", sha1_result);
+    println!("{:x}", sha1_result);
 }
 
 pub fn sha256_checksum(file_path: String) {
@@ -185,5 +185,5 @@ pub fn sha256_checksum(file_path: String) {
     }
 
     let sha256_result = sha256_hasher.finalize();
-    println!("SHA-256: {:x}", sha256_result);
+    println!("{:x}", sha256_result);
 }

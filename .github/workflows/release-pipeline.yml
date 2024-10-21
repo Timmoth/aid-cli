@@ -119,7 +119,7 @@ jobs:
       - name: Generate release tag
         id: tag
         run: |
-          VERSION=0.1.4
+          VERSION=0.1.5
           echo "::set-output name=release_tag::aid-${VERSION}"
 
       - name: Create GitHub release

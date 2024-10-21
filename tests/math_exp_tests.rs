@@ -16,7 +16,7 @@ mod tests {
         }
         
         let (_, ast) = parse_result.unwrap();
-        let eval = math_utils::evaluate(&ast);
+        let eval = math_utils::evaluate(&ast, 0.0);
         assert_eq!(3.0, eval);
     }
 
@@ -30,7 +30,7 @@ mod tests {
         }
         
         let (_, ast) = parse_result.unwrap();
-        let eval = math_utils::evaluate(&ast);
+        let eval = math_utils::evaluate(&ast, 0.0);
         assert_eq!(-1.0, eval);
     }
 
@@ -44,7 +44,7 @@ mod tests {
         }
         
         let (_, ast) = parse_result.unwrap();
-        let eval = math_utils::evaluate(&ast);
+        let eval = math_utils::evaluate(&ast, 0.0);
         assert_eq!(2.0, eval);
     }
 
@@ -58,7 +58,7 @@ mod tests {
         }
         
         let (_, ast) = parse_result.unwrap();
-        let eval = math_utils::evaluate(&ast);
+        let eval = math_utils::evaluate(&ast, 0.0);
         assert_eq!(0.5, eval);
     }
 
@@ -72,7 +72,7 @@ mod tests {
         }
         
         let (_, ast) = parse_result.unwrap();
-        let eval = math_utils::evaluate(&ast);
+        let eval = math_utils::evaluate(&ast, 0.0);
         assert_eq!(8.0, eval);
     }
 
@@ -86,7 +86,7 @@ mod tests {
         }
         
         let (_, ast) = parse_result.unwrap();
-        let eval = math_utils::evaluate(&ast);
+        let eval = math_utils::evaluate(&ast, 0.0);
         let expected = 0.0;
         assert!((eval - expected).abs() < f64::EPSILON);
     }
@@ -101,7 +101,7 @@ mod tests {
         }
         
         let (_, ast) = parse_result.unwrap();
-        let eval = math_utils::evaluate(&ast);
+        let eval = math_utils::evaluate(&ast, 0.0);
         let expected = 1.0;
         assert!((eval - expected).abs() < f64::EPSILON);
     }
@@ -116,7 +116,7 @@ mod tests {
         }
         
         let (_, ast) = parse_result.unwrap();
-        let eval = math_utils::evaluate(&ast);
+        let eval = math_utils::evaluate(&ast, 0.0);
         let expected = -1.0;
         assert!((eval - expected).abs() < f64::EPSILON);
     }
@@ -131,7 +131,7 @@ mod tests {
         }
         
         let (_, ast) = parse_result.unwrap();
-        let eval = math_utils::evaluate(&ast);
+        let eval = math_utils::evaluate(&ast, 0.0);
         let expected = 4.0;
         assert!((eval - expected).abs() < f64::EPSILON);
     }
@@ -146,7 +146,7 @@ mod tests {
         }
         
         let (_, ast) = parse_result.unwrap();
-        let eval = math_utils::evaluate(&ast);
+        let eval = math_utils::evaluate(&ast, 0.0);
         let expected = -4.0;
         assert!((eval - expected).abs() < f64::EPSILON);
     }
@@ -161,7 +161,7 @@ mod tests {
         }
         
         let (_, ast) = parse_result.unwrap();
-        let eval = math_utils::evaluate(&ast);
+        let eval = math_utils::evaluate(&ast, 0.0);
         let expected = 1.0;
         assert!((eval - expected).abs() < f64::EPSILON);
     }
@@ -176,7 +176,7 @@ mod tests {
         }
         
         let (_, ast) = parse_result.unwrap();
-        let eval = math_utils::evaluate(&ast);
+        let eval = math_utils::evaluate(&ast, 0.0);
         let expected = 4.810477380965351;
         println!("{}", eval);
         assert!((eval - expected).abs() < f64::EPSILON);
