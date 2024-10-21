@@ -1,0 +1,37 @@
+site_name: Aid-CLI Docs
+site_url: https://timmoth.github.io/aid-cli/
+site_description: A CLI toolkit featuring a variety of helpful utilities.
+site_author: Timmoth
+repo_url: https://github.com/Timmoth/aid-cli/
+edit_uri: edit/main/docs
+
+theme:
+  name: readthedocs
+  highlightjs: true
+  logo: assets/logo.png
+nav:
+  - Overview ✅: index.md
+  - Quick start ▶️: quickstart.md
+  - Releases 📒: releases.md
+  - Support 🛟: support.md
+  - Contributing 🙏: contributing.md
+  - Features:
+      - http: features/http.md
+      - ip: features/ip.md
+      - port: features/port.md
+      - cpu: features/cpu.md
+      - mem: features/mem.md
+      - disk: features/disk.md
+      - network: features/network.md
+      - json: features/json.md
+      - csv: features/csv.md
+      - text: features/text.md
+      - file: features/file.md
+      - time: features/time.md
+      - bits: features/bits.md
+      - math: features/math.md
+markdown_extensions:
+  - tables
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences

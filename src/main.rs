@@ -1,5 +1,5 @@
 use aid::{
-    cpu_commands, csv_commands, disk_commands, file_commands, http_commands, ip_commands, json_commands, mem_commands, network_commands, port_commands, text_commands
+    bits_commands, cpu_commands, csv_commands, disk_commands, file_commands, http_commands, ip_commands, json_commands, mem_commands, network_commands, port_commands, text_commands, time_commands, math_commands
 };
 use clap::{Parser, Subcommand};
 
@@ -34,6 +34,12 @@ enum Commands {
     Text(TextCommands),
     #[command(subcommand, about = "File information")]
     File(FileCommands),
+    #[command(subcommand, about = "Time related functions")]
+    Time(TimeCommands),
+    #[command(subcommand, about = "Math functions")]
+    Math(MathCommands),
+    #[command(subcommand, about = "Bit manipulation functions")]
+    Bits(BitsCommands),
 }
 #[derive(Subcommand, Debug, Clone)]
 enum IpCommands {
@@ -305,6 +311,69 @@ enum FileCommands {
     },
 }
 
+#[derive(Subcommand, Debug, Clone)]
+enum TimeCommands {
+    #[command(about = "Display unix timestamp")]
+    Unix {
+        #[arg(short = 'm', long = "milli", action = clap::ArgAction::SetTrue,
+               help = "Output the timestamp as unix milliseconds.")]
+        milli: bool,
+    },
+    #[command(about = "Display the datetime")]
+    Dt{
+        #[arg(short = 'l', long = "local", action = clap::ArgAction::SetTrue,
+        help = "Use the local datetime.")]
+        local: bool,
+        #[arg(short = 'r', long = "rfc", action = clap::ArgAction::SetTrue,
+        help = "Output the datetime in Rfc3339 format.")]
+        rfc: bool,
+    },
+}
+
+#[derive(Subcommand, Debug, Clone)]
+enum MathCommands {
+    #[command(about = "Evaluates a math expression")]
+    Eval {
+        #[arg(short='e', long = "exp", help = "Math expression to evaluate.")]
+        expression: String,
+    },
+}
+
+#[derive(Subcommand, Debug, Clone)]
+enum BitsCommands {
+    #[command(about = "Display the number in bitboard representation")]
+    Board {
+        #[arg(short = 'b', long = "bin", help = "Display the binary value as a bitboard.")]
+        binary: Option<String>,
+        #[arg(short = 'd', long = "dec", help = "Display the decimal value as a bitboard.")]
+        decimal: Option<u64>,
+        #[arg(long = "hex", help = "Display the decimal value as a bitboard.")]
+        hex: Option<String>,
+    },
+    #[command(about = "Converts a number to it's binary representation")]
+    ToBin {
+        #[arg(short = 'd', long = "dec", help = "Convert the decimal number to binary.")]
+        decimal: Option<u64>,
+        #[arg(long = "hex", help = "Converts the hex number to binary.")]
+        hex: Option<String>,
+    },
+    #[command(about = "Converts a number to it's decimal representation")]
+    ToDec {
+        #[arg(short = 'b', long = "bin", help = "Converts the binary number to hedecimalx.")]
+        bin: Option<String>,
+        #[arg(long = "hex", help = "Converts the hex number to decimal.")]
+        hex: Option<String>,
+    },
+    #[command(about = "Converts a number to it's hex representation")]
+    ToHex {
+        #[arg(short = 'd', long = "dec", help = "Convert the decimal number to hex.")]
+        decimal: Option<u64>,
+        #[arg(short = 'b', long = "bin", help = "Converts the binary number to hex.")]
+        bin: Option<String>,
+    },
+}
+
+
 #[tokio::main]
 async fn main() {
     let args = Args::parse();
@@ -370,5 +439,19 @@ async fn main() {
             FileCommands::Zip { dir, file } => file_commands::zip_directory(dir, file),
 
         },
+        Commands::Time(sub_command) => match sub_command {
+            TimeCommands::Unix { milli } => time_commands::unix_timestamp(milli),
+            TimeCommands::Dt { local, rfc } => time_commands::date_time(local, rfc),
+        },
+        Commands::Math(sub_command) => match sub_command {
+            MathCommands::Eval { expression } => math_commands::evaluate(expression),
+
+        },
+          Commands::Bits(sub_command) => match sub_command{
+                BitsCommands::Board { binary, decimal, hex } => bits_commands::bitboard(binary, decimal, hex),
+                BitsCommands::ToBin { decimal, hex } => bits_commands::to_binary(decimal, hex),
+                BitsCommands::ToDec { bin, hex } => bits_commands::to_dec(bin, hex),
+                BitsCommands::ToHex { decimal, bin } => bits_commands::to_hex(decimal, bin),            
+            }
     }
 }

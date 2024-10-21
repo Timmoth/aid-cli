@@ -1,60 +1,51 @@
 use reqwest::Method;
 use tokio::fs::File;
-use tokio::net::TcpListener;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
-use std::str::{self, FromStr};
 use serde_derive::Deserialize;
-use serde_json;
+use serde_json::{from_str, Value};
 use reqwest::{Client, header::{HeaderMap, HeaderName, HeaderValue}};
-use serde_json::Value;
+use core::str;
+use std::str::FromStr;
+use tokio::net::TcpListener;
 
 #[derive(Deserialize, Debug)]
 struct HttpRequestConfig {
     method: Option<String>,
     url: Option<String>,
     headers: Option<Value>,
-    body: Option<Value>
+    body: Option<Value>,
 }
 
 async fn read_config_file(file_path: &str) -> Result<HttpRequestConfig, String> {
     let mut file = File::open(file_path).await.map_err(|e| format!("Failed to open file: {}", e))?;
     let mut contents = String::new();
     file.read_to_string(&mut contents).await.map_err(|e| format!("Failed to read file: {}", e))?;
-    let config: HttpRequestConfig = serde_json::from_str(&contents).map_err(|e| format!("Failed to deserialize JSON: {}", e))?;
-    Ok(config)
+    serde_json::from_str(&contents).map_err(|e| format!("Failed to deserialize JSON: {}", e))
 }
 
-// Main function to send HTTP requests
-pub async fn http_request(method: Option<String>, 
-    url: Option<String>, 
-    config_path: Option<String>,
-    output: Option<String>) {
-    let mut config: HttpRequestConfig = HttpRequestConfig {
-        method: None,
-        url: None,
-        headers: None,
-        body: None,
-    };
-
-    // Read configuration from file if provided
-    if let Some(c) = config_path {
-        if !c.is_empty() {
-            match read_config_file(&c).await {
-                Ok(cfg) => config = cfg,
-                Err(e) => {
-                    eprintln!("Error reading config: {}", e);
-                    return; // Exit early if the config fails
-                }
-            }
+// Helper function to build request headers
+fn build_headers(header_map: Option<Value>) -> Result<HeaderMap, String> {
+    let mut headers = HeaderMap::new();
+    if let Some(headers_object) = header_map.and_then(|h| h.as_object().cloned()) {
+        for (key, value) in headers_object {
+            let header_key = HeaderName::from_str(&key).map_err(|_| format!("Invalid header key: {}", key))?;
+            let value_str = value.as_str().ok_or(format!("Header value for '{}' is not a string", key))?;
+            let header_value = HeaderValue::from_str(value_str).map_err(|_| format!("Invalid header value for '{}': {}", key, value_str))?;
+            headers.insert(header_key, header_value);
         }
     }
+    Ok(headers)
+}
 
-    // Set the URL from input if provided
+// Helper function to handle the request method and URL logic
+fn parse_method_and_url(config: &mut HttpRequestConfig, method: Option<String>, url: Option<String>) -> Result<(Method, String), String> {
     if let Some(u) = url {
         if !u.is_empty() {
             config.url = Some(u);
         }
     }
+
+    let url = config.url.clone().ok_or("No valid URL provided.".to_string())?;
 
     if let Some(m) = method {
         if !m.is_empty() {
@@ -62,94 +53,107 @@ pub async fn http_request(method: Option<String>,
         }
     }
 
-    if let Some(url) = config.url {
-        let method = match config.method {
-            Some(method) => match Method::from_str(&method) {
-                Ok(m) => m,
-                Err(_) => {
-                    eprintln!("Invalid HTTP method: {}", method);
-                    return;
-                }
-            },
-            None => {
-                eprintln!("No valid HTTP method provided.");
-                return;
-            }
-        };
+    let method = config.method.clone().ok_or("No valid HTTP method provided.".to_string())?;
+    let method = Method::from_str(&method).map_err(|_| format!("Invalid HTTP method: {}", method))?;
 
-        // Initialize the request builder
-        let mut builder = Client::new().request(method, &url);
+    Ok((method, url))
+}
 
-        // Add headers if provided
-        if let Some(header_map) = config.headers {
-            if let Some(headers_object) = header_map.as_object() {
-                let mut headers = HeaderMap::new();
-                for (key, value) in headers_object {
-                    if let Some(value_str) = value.as_str() {
-                        if let Ok(header_key) = HeaderName::from_str(key) {
-                            if let Ok(header_value) = HeaderValue::from_str(value_str) {
-                                headers.insert(header_key, header_value);
-                            } else {
-                                eprintln!("Invalid header value for '{}': {}", key, value_str);
-                            }
-                        } else {
-                            eprintln!("Invalid header key: {}", key);
-                        }
-                    } else {
-                        eprintln!("Header value for '{}' is not a string: {:?}", key, value);
-                    }
-                }
-                builder = builder.headers(headers);
-            } else {
-                eprintln!("Headers are not in an object format.");
-            }
+pub async fn http_request(
+    method: Option<String>, 
+    url: Option<String>, 
+    config_path: Option<String>,
+    output: Option<String>
+) {
+    let mut config = HttpRequestConfig {
+        method: None,
+        url: None,
+        headers: None,
+        body: None,
+    };
+
+    // Load configuration from file, if provided
+    if let Some(c) = config_path {
+        if let Err(e) = read_config_file(&c).await.map(|cfg| config = cfg) {
+            eprintln!("Error reading config: {}", e);
+            return;
         }
+    }
 
-        // Add the body if it's provided
-        if let Some(body) = config.body {
-            // Serialize the body as a JSON string
-            match serde_json::to_string(&body) {
-                Ok(body_str) => {
-                    builder = builder.body(body_str);
-                }
-                Err(e) => {
-                    eprintln!("Failed to serialize body: {}", e);
-                    return;
-                }
-            }
+    // Parse the method and URL
+    let (method, url) = match parse_method_and_url(&mut config, method, url) {
+        Ok((method, url)) => (method, url),
+        Err(e) => {
+            eprintln!("{}", e);
+            return;
         }
+    };
 
-        // Send the request and handle the response
-        match builder.send().await {
-            Ok(response) => handle_response(response, output).await,
-            Err(e) => {
-                eprintln!("Http request failed: {}", e);
-            }
-        }
+    // Build the request
+    let client = Client::new();
+    let mut builder = client.request(method, &url);
+
+    // Add headers if provided
+    if let Ok(headers) = build_headers(config.headers) {
+        builder = builder.headers(headers);
     } else {
-        eprintln!("No valid configuration or URL provided.");
+        eprintln!("Error building headers");
+        return;
+    }
+
+    // Add body if provided
+    if let Some(body) = config.body {
+        if let Ok(body_str) = serde_json::to_string(&body) {
+            builder = builder.body(body_str);
+        } else {
+            eprintln!("Failed to serialize body");
+            return;
+        }
+    }
+
+    // Send the request and handle the response
+    match builder.send().await {
+        Ok(response) => handle_response(response, output).await,
+        Err(e) => eprintln!("Http request failed: {}", e),
     }
 }
 
-// Function to handle HTTP response
+// Helper function to handle HTTP response
 async fn handle_response(response: reqwest::Response, output: Option<String>) {
-    if response.status().is_success() {
-        if let Some(output) = output{
-            let bytes = response.bytes().await.unwrap();
-            let mut file = File::create(&output).await.map_err(|e| format!("Failed to create file: {}", e)).unwrap();
-            file.write_all(&bytes).await.unwrap();
-            println!("Downloaded file to: {}", output);
-        }else{
-            match response.text().await {
-                Ok(text) => println!("{}", text),
-                Err(e) => eprintln!("Failed to read response: {}", e),
+    let status = response.status();
+    if status.is_success() {
+        if let Some(output) = output {
+            if let Ok(bytes) = response.bytes().await {
+                if let Ok(mut file) = File::create(&output).await {
+                    let _ = file.write_all(&bytes).await;
+                    println!("Downloaded file to: {}", output);
+                } else {
+                    eprintln!("Failed to write the output file.");
+                }
+            }
+        } else {
+            if let Ok(text) = response.text().await {
+                let payload = from_str(&text).unwrap_or(Value::Null);
+                let json_output = serde_json::to_string_pretty(&payload).unwrap();
+                println!("{}", json_output);
+            } else {
+                eprintln!("Failed to read response.");
             }
         }
-
     } else {
-        eprintln!("Request failed with status: {}", response.status());
+        eprintln!("Request failed with status: {}", status);
+
+        // Attempt to read and print the error body if available
+        if let Ok(error_body) = response.text().await {
+            let payload = from_str(&error_body).unwrap_or(Value::Null);
+            let json_output = serde_json::to_string_pretty(&payload).unwrap();
+            println!("{}", json_output);
+        } else {
+            eprintln!("Failed to read the error response body.");
+        }
     }
 }
+
 
 pub async fn http_serve(port: u16) {
     let addr = format!("0.0.0.0:{}", port);

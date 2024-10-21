@@ -48,6 +48,9 @@ cargo build --release
   aid csv      CSV search / transformation functions
   aid text     Text manipulation functions
   aid file     File info functions
+  aid time     Time related functions
+  aid bits     Bit manipulation functions
+  aid math     Math functions
   aid help     Print this message or the help of the given subcommand(s)
 ```
 
@@ -159,4 +162,36 @@ cargo build --release
   aid file zip  zips the files in the source directory
             -d, --dir <DIRECTORY>   file path.
             -f, --file <FILE>   output zip file.
+```
+
+## aid time
+```
+  aid time unix  Display unix timestamp
+            -m, --milli  Output the timestamp as unix milliseconds.
+  aid time dt  Display the datetime
+            -l, --local  Use the local datetime.
+            -r, --rfc   Output the datetime in Rfc3339 format.
+```
+
+## aid math
+```
+  aid time eval  Evaluates a math expression
+            -e, --exp <EXPRESSION>  Math expression to evaluate.
+```
+
+## aid bits
+```
+  aid bits board  Display the number in bitboard representation
+            -b, --bin <BINARY>   Display the binary value as a bitboard.
+            -d, --dec <DECIMAL>  Display the decimal value as a bitboard.
+                --hex <HEX>      Display the decimal value as a bitboard.
+  aid bits to-bin  Converts a number to it's binary representation
+            -d, --dec <DECIMAL>  Convert the decimal number to binary.
+                --hex <HEX>      Converts the hex number to binary.
+  aid bits to-dec  Converts a number to it's decimal representation
+            -b, --bin <BIN>  Converts the binary number to hedecimalx.
+                --hex <HEX>  Converts the hex number to decimal.
+  aid bits to-hex  Converts a number to it's hex representation
+            -d, --dec <DECIMAL>  Convert the decimal number to hex.
+            -b, --bin <BIN>      Converts the binary number to hex.
 ```
