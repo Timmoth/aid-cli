@@ -5,6 +5,29 @@
 </p>
 A CLI toolkit featuring a variety of helpful utilities.
 
+```
+aid math plot --start -20 --end 20 --step 0.5 --exp "x * sin(1 - x)"
+                        |                      *
+    *                   |                     **
+   ***                  |                     **
+   * *                  |                    ***
+   * *                  |             **     * **
+   * *     **           |             ***    *  *
+   * *     ***          |             * *    *  *
+  **  *   ** *          |     ***    *  *    *  *
+  *   *   *  *    ***   |     * *    *  *    *  *
+  *   *   *  **   * **  |    **  *   *  **   *  *
+--*---*---*---*--**--******-**---*---*---*--*---*-
+  *   *  **   *  *      | ***    *  *    *  *   **
+  *   *  *    ****      |         * *    *  *
+  *    * *     **       |         * *    *  *
+ **    * *              |         ***    ** *
+ *     ***              |                 ***
+ *     **               |                 **
+ *                      |                 **
+**                      |
+**                      |
+```
 ## Read the [docs](https://timmoth.github.io/aid-cli/)
 for all supported commands, parameters, and examples
 
