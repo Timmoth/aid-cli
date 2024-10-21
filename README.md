@@ -6,6 +6,7 @@
 A CLI toolkit featuring a variety of helpful utilities.
 
 ## Read the [docs](https://timmoth.github.io/aid-cli/)
+for all supported commands, parameters, and examples
 
 ## Installation
 

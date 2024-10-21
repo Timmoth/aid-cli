@@ -1,4 +1,3 @@
-## aid ip 
 ### aid ip local
 ```
   aid ip local   Show my local IP address

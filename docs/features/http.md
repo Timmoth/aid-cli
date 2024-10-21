@@ -1,5 +1,3 @@
-## aid http
-
 ### aid http req
 ```
   aid http req    Make a HTTP request

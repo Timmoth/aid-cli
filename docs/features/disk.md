@@ -1,5 +1,3 @@
-## aid disk
-
 ### aid disk info
 ```
   aid disk info  Show disk information

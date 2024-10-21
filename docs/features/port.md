@@ -1,5 +1,3 @@
-## aid port
-
 ### aid port status
 ```
   aid port status  Check if the specified port is 'open' or 'closed'.

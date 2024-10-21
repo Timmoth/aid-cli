@@ -1,5 +1,3 @@
-## aid bits
-
 ### aid bits board
 ```
   aid bits board  Display the number in bitboard representation

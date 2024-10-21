@@ -1,5 +1,3 @@
-## aid network
-
 ### aid network info
 ```
   aid network info  Show network information

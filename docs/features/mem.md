@@ -1,4 +1,3 @@
-## aid mem
 ### aid mem usage
 ```
   aid mem usage  Monitor memory usage

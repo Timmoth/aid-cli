@@ -1,4 +1,3 @@
-## aid text
 ### aid text base64-encode
 ```
   aid text base64-encode  encodes a base64 string

@@ -1,5 +1,3 @@
-## aid time
-
 ### aid time unix
 ```
   aid time unix  Display unix timestamp

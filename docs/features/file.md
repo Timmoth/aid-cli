@@ -1,5 +1,3 @@
-## aid file
-
 ### aid file info
 ```
   aid file info  prints file metadata

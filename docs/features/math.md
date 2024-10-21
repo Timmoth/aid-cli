@@ -1,12 +1,10 @@
-## aid math
-
 ### aid math eval
 ```
   aid math eval  Evaluates a math expression
             -e, --exp <EXPRESSION>  Math expression to evaluate.
 
 -----input-----
-aid math plot --start -20 --end 20 --step 0.5 --exp "x * sin(1 - x)"
+aid math eval -e "sin(pi / 2) * 8 ^ e"
 
 -----output-----
 285.0054081607272

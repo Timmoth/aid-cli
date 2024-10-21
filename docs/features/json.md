@@ -1,5 +1,3 @@
-## aid json
-
 ### aid json jwt-decode
 ```
   aid json jwt-decode   Decode a JWT

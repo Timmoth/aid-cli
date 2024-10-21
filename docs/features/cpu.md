@@ -1,5 +1,3 @@
-## aid cpu
-
 ### aid cpu info
 ```
   aid cpu info   Show CPU information
