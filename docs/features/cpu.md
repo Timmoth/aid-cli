@@ -15,6 +15,7 @@ AMD Ryzen 9 5900HX with Radeon Graphics
   aid cpu usage  Monitor CPU usage
             -w, --watch  Continuously monitor CPU usage.
             -j, --json   Output CPU usage in JSON format.
+            -p, --plot   Plot total % cpu usage.
 
 -----input-----
 aid cpu usage -w -p

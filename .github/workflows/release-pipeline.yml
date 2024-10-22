@@ -28,14 +28,13 @@ jobs:
           mkdir -p output/win
           cp target/release/aid.exe output/win/aid-win.exe
 
-      # Upload the Windows artifact
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v3
         with:
           name: windows-artifact
           path: output/win/aid-win.exe
 
-  # Build for Linux
+  # Build for Linux x86_64 
   build_linux:
     runs-on: ubuntu-latest
 
@@ -56,14 +55,13 @@ jobs:
           mkdir -p output/linux
           cp target/release/aid output/linux/aid-linux
 
-      # Upload the Linux artifact
       - name: Upload Linux artifact
         uses: actions/upload-artifact@v3
         with:
           name: linux-artifact
           path: output/linux/aid-linux
 
-  # Build for macOS
+  # Build for macOS x86_64 
   build_macos:
     runs-on: macos-latest
 
@@ -84,17 +82,72 @@ jobs:
           mkdir -p output/osx
           cp target/release/aid output/osx/aid-mac
 
-      # Upload the macOS artifact
       - name: Upload macOS artifact
         uses: actions/upload-artifact@v3
         with:
           name: macos-artifact
           path: output/osx/aid-mac
 
+  # Build for Linux ARM64
+  build_linux_arm:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          target: aarch64-unknown-linux-gnu  # Add ARM64 target
+          components: clippy
+
+      - name: Build for Linux ARM
+        run: |
+          cargo build --release --target aarch64-unknown-linux-gnu
+          mkdir -p output/linux_arm
+          cp target/aarch64-unknown-linux-gnu/release/aid output/linux_arm/aid-linux-arm
+
+      - name: Upload Linux ARM artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: linux-arm-artifact
+          path: output/linux_arm/aid-linux-arm
+
+  # Build for macOS ARM (Apple Silicon)
+  build_macos_arm:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          target: aarch64-apple-darwin  # Add macOS ARM target
+          components: clippy
+
+      - name: Build for macOS ARM
+        run: |
+          cargo build --release --target aarch64-apple-darwin
+          mkdir -p output/osx_arm
+          cp target/aarch64-apple-darwin/release/aid output/osx_arm/aid-mac-arm
+
+      - name: Upload macOS ARM artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: macos-arm-artifact
+          path: output/osx_arm/aid-mac-arm
+
   # Create a single GitHub release with all artifacts
   create_release:
     runs-on: ubuntu-latest
-    needs: [build_windows, build_linux, build_macos]
+    needs: [build_windows, build_linux, build_macos, build_linux_arm, build_macos_arm]
 
     steps:
       - name: Checkout code
@@ -116,6 +169,16 @@ jobs:
         with:
           name: macos-artifact
 
+      - name: Download Linux ARM artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: linux-arm-artifact
+
+      - name: Download macOS ARM artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: macos-arm-artifact
+
       - name: Generate release tag
         id: tag
         run: |
@@ -132,3 +195,5 @@ jobs:
             aid-win.exe
             aid-linux
             aid-mac
+            aid-linux-arm
+            aid-mac-arm

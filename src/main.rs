@@ -133,7 +133,7 @@ enum CpuCommands {
         json: bool,
 
         #[arg(short = 'p', long = "plot", action = clap::ArgAction::SetTrue,
-               help = "Plot total CPU usage.")]
+               help = "Plot total % CPU usage.")]
         plot: bool,
     },
 }
@@ -151,7 +151,7 @@ enum MemoryCommands {
         json: bool,
 
         #[arg(short = 'p', long = "plot", action = clap::ArgAction::SetTrue,
-               help = "Plot total mem usage.")]
+               help = "Plot total % mem usage.")]
         plot: bool,
     },
 }
