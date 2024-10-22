@@ -88,46 +88,6 @@ jobs:
           name: macos-artifact
           path: output/osx/aid-mac
 
-  # Build for Linux ARM64
-  build_linux_arm:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gcc-aarch64-linux-gnu libssl-dev pkg-config
-
-      - name: Set up Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
-          target: aarch64-unknown-linux-gnu  # Add ARM64 target
-          components: clippy
-          
-      - name: Set environment variables for OpenSSL
-        run: |
-          export PKG_CONFIG_ALLOW_CROSS=1
-          export PKG_CONFIG_SYSROOT_DIR="/usr/aarch64-linux-gnu"
-          export PKG_CONFIG_PATH="/usr/aarch64-linux-gnu/lib/pkgconfig"
-          export OPENSSL_DIR=/usr/aarch64-linux-gnu/lib/openssl
-
-      - name: Build for Linux ARM
-        run: |
-          cargo build --release --target aarch64-unknown-linux-gnu
-          mkdir -p output/linux_arm
-          cp target/aarch64-unknown-linux-gnu/release/aid output/linux_arm/aid-linux-arm
-
-      - name: Upload Linux ARM artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: linux-arm-artifact
-          path: output/linux_arm/aid-linux-arm
-
   # Build for macOS ARM (Apple Silicon)
   build_macos_arm:
     runs-on: macos-latest
@@ -159,7 +119,7 @@ jobs:
   # Create a single GitHub release with all artifacts
   create_release:
     runs-on: ubuntu-latest
-    needs: [build_windows, build_linux, build_macos, build_linux_arm, build_macos_arm]
+    needs: [build_windows, build_linux, build_macos, build_macos_arm]
 
     steps:
       - name: Checkout code
@@ -180,11 +140,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: macos-artifact
-
-      - name: Download Linux ARM artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: linux-arm-artifact
 
       - name: Download macOS ARM artifact
         uses: actions/download-artifact@v3
@@ -207,5 +162,4 @@ jobs:
             aid-win.exe
             aid-linux
             aid-mac
-            aid-linux-arm
             aid-mac-arm
