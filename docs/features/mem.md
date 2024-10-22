@@ -5,13 +5,30 @@
             -j, --json   Output memory usage in JSON format.
 
 -----input-----
-aid mem usage -j
+aid mem usage -w -p
 -----output-----
-{
-  "total_gb": 15.4,
-  "used_gb": 13.8,
-  "used_percent": 89.6,
-  "free_gb": 1.6,
-  "free_percent": 10.4
-}
+total: 15.4GB, used: 13.3GB (86.6%), free: 2.1GB (13.4%)
+plot: used memory %
+X range: [15, 44]
+Y range: [86.5, 87.1]
+*  *
+* **
+*** *
+ ** *
+ *   *
+     *
+     *
+     **    **                 *
+      *   ***                **
+      *   * **               ***
+      *****  *****       ****  *
+                 *      **     *
+                 **     *      *
+                  ******       *******
+                                     *
+                                      *
+                                      *   ********
+                                       * **
+                                       * *
+                                        **
 ```

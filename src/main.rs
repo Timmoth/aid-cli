@@ -131,6 +131,10 @@ enum CpuCommands {
         #[arg(short = 'j', long = "json", action = clap::ArgAction::SetTrue,
                help = "Output CPU usage in JSON format.")]
         json: bool,
+
+        #[arg(short = 'p', long = "plot", action = clap::ArgAction::SetTrue,
+               help = "Plot total CPU usage.")]
+        plot: bool,
     },
 }
 
@@ -145,6 +149,10 @@ enum MemoryCommands {
         #[arg(short = 'j', long = "json", action = clap::ArgAction::SetTrue,
                help = "Output memory usage in JSON format.")]
         json: bool,
+
+        #[arg(short = 'p', long = "plot", action = clap::ArgAction::SetTrue,
+               help = "Plot total mem usage.")]
+        plot: bool,
     },
 }
 
@@ -403,11 +411,11 @@ async fn main() {
         },
         Commands::Cpu(sub_command) => match sub_command {
             CpuCommands::Info { json } => cpu_commands::system_cpu_info(json),
-            CpuCommands::Usage { watch, json } => cpu_commands::system_cpu_usage(watch, json).await,
+            CpuCommands::Usage { watch, json, plot } => cpu_commands::system_cpu_usage(watch, json, plot).await,
         },
         Commands::Mem(sub_command) => match sub_command {
-            MemoryCommands::Usage { watch, json } => {
-                mem_commands::system_mem_usage(watch, json).await
+            MemoryCommands::Usage { watch, json, plot } => {
+                mem_commands::system_mem_usage(watch, json, plot).await
             }
         },
         Commands::Disk(sub_command) => match sub_command {
