@@ -1,11 +1,29 @@
 #!/bin/bash
 
-# Determine the operating system (Linux or macOS)
+# Determine the operating system (Linux or macOS) and architecture (x86_64 or ARM64)
 OS="$(uname)"
+ARCH="$(uname -m)"
+
 if [[ "$OS" == "Linux" ]]; then
-    URL="https://github.com/Timmoth/aid-cli/releases/download/aid-0.1.6/aid-linux"
+    if [[ "$ARCH" == "x86_64" ]]; then
+        URL="https://github.com/Timmoth/aid-cli/releases/download/aid-0.1.6/aid-linux"
+    else
+        echo "Error: Unsupported architecture for Linux."
+        exit 1
+    fi
 elif [[ "$OS" == "Darwin" ]]; then
-    URL="https://github.com/Timmoth/aid-cli/releases/download/aid-0.1.6/aid-mac"
+    if [[ "$ARCH" == "x86_64" ]]; then
+        URL="https://github.com/Timmoth/aid-cli/releases/download/aid-0.1.6/aid-mac"
+        # Check if running on an x86 mac with Rosetta
+        if [[ $(sysctl -n sysctl.proc_translated) == "1" ]]; then
+            echo "Running on Apple Silicon with Rosetta. Consider downloading the ARM64 version."
+        fi
+    elif [[ "$ARCH" == "arm64" ]]; then
+        URL="https://github.com/Timmoth/aid-cli/releases/download/aid-0.1.6/aid-mac-arm"
+    else
+        echo "Error: Unsupported architecture for macOS."
+        exit 1
+    fi
 else
     echo "Error: Unsupported operating system."
     exit 1
@@ -25,7 +43,7 @@ else
 fi
 
 # Download the file
-echo "Downloading aid..."
+echo "Downloading aid from $URL..."
 $DOWNLOADER "$INSTALL_DIR/$FILENAME" "$URL"
 
 # Verify if the download was successful
