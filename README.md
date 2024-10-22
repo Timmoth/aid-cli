@@ -35,7 +35,7 @@ for all supported commands, parameters, and examples
 
 Manual installation is simple, just download the release and add it to your PATH environment variable, if you'd like an even easier way i've added scripts to do it for you.
 
-### Linux / Mac
+### Linux / Mac (apple silicon supported)
 ```
 wget https://raw.githubusercontent.com/Timmoth/aid-cli/refs/heads/main/install.sh
 chmod +x install.sh
