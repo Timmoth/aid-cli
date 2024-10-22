@@ -11,6 +11,7 @@
  | aid mem     | System memory information                                 |
  | aid disk    | System disk information                                   |
  | aid network | System network information                                |
+ | aid process | Display process information                               |
  | aid json    | JSON parsing / extraction functions                       |
  | aid csv     | CSV search / transformation functions                     |
  | aid text    | Text manipulation functions                               |
@@ -38,6 +39,8 @@
 | aid mem usage          | Monitor memory usage                                       |
 | aid disk info          | Show disk information                                      |
 | aid network info       | Show network information                                   |
+| aid network usage      | Display network usage                                      |
+| aid process usage      | Display process usage                                      |
 | aid json extract       | Extract a property from JSON data                          |
 | aid json jwt-decode    | Decode a JWT                                               |
 | aid csv search         | Sql search over csv                                        |

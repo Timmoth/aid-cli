@@ -1,5 +1,7 @@
 use aid::{
-    bits_commands, cpu_commands, csv_commands, disk_commands, file_commands, http_commands, ip_commands, json_commands, mem_commands, network_commands, port_commands, text_commands, time_commands, math_commands
+    bits_commands, cpu_commands, csv_commands, disk_commands, file_commands, http_commands,
+    ip_commands, json_commands, math_commands, mem_commands, network_commands, port_commands,
+    process_commands, text_commands, time_commands,
 };
 use clap::{Parser, Subcommand};
 
@@ -40,6 +42,8 @@ enum Commands {
     Math(MathCommands),
     #[command(subcommand, about = "Bit manipulation functions")]
     Bits(BitsCommands),
+    #[command(subcommand, about = "Process monitoring functions")]
+    Process(ProcessCommands),
 }
 #[derive(Subcommand, Debug, Clone)]
 enum IpCommands {
@@ -174,6 +178,12 @@ enum NetworkCommands {
                help = "Output network information in JSON format.")]
         json: bool,
     },
+    #[command(about = "Monitor network usage")]
+    Usage {
+        #[arg(short = 'w', long = "watch", action = clap::ArgAction::SetTrue,
+               help = "Continuously monitor network usage.")]
+        watch: bool,
+    },
 }
 
 #[derive(Subcommand, Debug, Clone)]
@@ -280,9 +290,17 @@ enum TextCommands {
         start: Option<usize>,
         #[arg(short = 'e', long = "end", help = "last line to print")]
         end: Option<usize>,
-        #[arg(short = 'f', long = "first", help = "number of lines from the start of the file to print")]
+        #[arg(
+            short = 'f',
+            long = "first",
+            help = "number of lines from the start of the file to print"
+        )]
         head: Option<usize>,
-        #[arg(short = 'l', long = "last", help = "number of lines from the end of the file to print")]
+        #[arg(
+            short = 'l',
+            long = "last",
+            help = "number of lines from the end of the file to print"
+        )]
         tail: Option<usize>,
     },
 }
@@ -328,7 +346,7 @@ enum TimeCommands {
         milli: bool,
     },
     #[command(about = "Display the datetime")]
-    Dt{
+    Dt {
         #[arg(short = 'l', long = "local", action = clap::ArgAction::SetTrue,
         help = "Use the local datetime.")]
         local: bool,
@@ -342,18 +360,23 @@ enum TimeCommands {
 enum MathCommands {
     #[command(about = "Evaluates a math expression")]
     Eval {
-        #[arg(short='e', long = "exp", help = "Math expression to evaluate.")]
+        #[arg(short = 'e', long = "exp", help = "Math expression to evaluate.")]
         expression: String,
     },
     #[command(about = "Plot a math expression")]
     Plot {
-        #[arg(long = "start", help = "Start x coord.", allow_hyphen_values=true)]
-        startX: f32,
-            #[arg(long = "end", help = "End x coord.",allow_hyphen_values=true)]
-        endX: f32,
-            #[arg(short='s', long = "step", help = "x step size.",allow_hyphen_values=true)]
-        stepX: f32,
-            #[arg(short='e', long = "exp", help = "Math expression to plot.")]
+        #[arg(long = "start", help = "Start x coord.", allow_hyphen_values = true)]
+        start_x: f32,
+        #[arg(long = "end", help = "End x coord.", allow_hyphen_values = true)]
+        end_x: f32,
+        #[arg(
+            short = 's',
+            long = "step",
+            help = "x step size.",
+            allow_hyphen_values = true
+        )]
+        step_x: f32,
+        #[arg(short = 'e', long = "exp", help = "Math expression to plot.")]
         expression: String,
     },
 }
@@ -362,23 +385,39 @@ enum MathCommands {
 enum BitsCommands {
     #[command(about = "Display the number in bitboard representation")]
     Board {
-        #[arg(short = 'b', long = "bin", help = "Display the binary value as a bitboard.")]
+        #[arg(
+            short = 'b',
+            long = "bin",
+            help = "Display the binary value as a bitboard."
+        )]
         binary: Option<String>,
-        #[arg(short = 'd', long = "dec", help = "Display the decimal value as a bitboard.")]
+        #[arg(
+            short = 'd',
+            long = "dec",
+            help = "Display the decimal value as a bitboard."
+        )]
         decimal: Option<u64>,
         #[arg(long = "hex", help = "Display the decimal value as a bitboard.")]
         hex: Option<String>,
     },
     #[command(about = "Converts a number to it's binary representation")]
     ToBin {
-        #[arg(short = 'd', long = "dec", help = "Convert the decimal number to binary.")]
+        #[arg(
+            short = 'd',
+            long = "dec",
+            help = "Convert the decimal number to binary."
+        )]
         decimal: Option<u64>,
         #[arg(long = "hex", help = "Converts the hex number to binary.")]
         hex: Option<String>,
     },
     #[command(about = "Converts a number to it's decimal representation")]
     ToDec {
-        #[arg(short = 'b', long = "bin", help = "Converts the binary number to hedecimalx.")]
+        #[arg(
+            short = 'b',
+            long = "bin",
+            help = "Converts the binary number to hedecimalx."
+        )]
         bin: Option<String>,
         #[arg(long = "hex", help = "Converts the hex number to decimal.")]
         hex: Option<String>,
@@ -392,6 +431,32 @@ enum BitsCommands {
     },
 }
 
+#[derive(Subcommand, Debug, Clone)]
+enum ProcessCommands {
+    #[command(about = "Display process usage")]
+    Usage {
+        #[arg(
+            short = 'f',
+            long = "filter",
+            help = "filter the results by process name regex."
+        )]
+        filter: Option<String>,
+        #[arg(
+            short = 's',
+            long = "sort",
+            help = "Sort the results by [cpu, mem, disk]"
+        )]
+        sort_by: Option<String>,
+        #[arg(
+            short = 'l',
+            long = "limit",
+            help = "Limit the number of results to display."
+        )]
+        limit: Option<usize>,
+        #[arg(short = 'w', long = "watch", help = "Continuously monitor the processes.", action = clap::ArgAction::SetTrue)]
+        watch: bool,
+    },
+}
 
 #[tokio::main]
 async fn main() {
@@ -411,7 +476,9 @@ async fn main() {
         },
         Commands::Cpu(sub_command) => match sub_command {
             CpuCommands::Info { json } => cpu_commands::system_cpu_info(json),
-            CpuCommands::Usage { watch, json, plot } => cpu_commands::system_cpu_usage(watch, json, plot).await,
+            CpuCommands::Usage { watch, json, plot } => {
+                cpu_commands::system_cpu_usage(watch, json, plot).await
+            }
         },
         Commands::Mem(sub_command) => match sub_command {
             MemoryCommands::Usage { watch, json, plot } => {
@@ -423,6 +490,7 @@ async fn main() {
         },
         Commands::Network(sub_command) => match sub_command {
             NetworkCommands::Info { json } => network_commands::system_network_info(json).await,
+            NetworkCommands::Usage { watch } => network_commands::system_network_usage(watch),
         },
         Commands::Http(sub_command) => match sub_command {
             HttpCommands::Req {
@@ -447,7 +515,13 @@ async fn main() {
             TextCommands::Base64Encode { input } => text_commands::base64_encode(input),
             TextCommands::Base64Decode { input } => text_commands::base64_decode(input),
             TextCommands::Regex { file, regex } => text_commands::regex_search(file, regex),
-            TextCommands::Lines { file, start, end, head, tail } => text_commands::print_lines(file, start, end, head, tail),
+            TextCommands::Lines {
+                file,
+                start,
+                end,
+                head,
+                tail,
+            } => text_commands::print_lines(file, start, end, head, tail),
         },
 
         Commands::File(sub_command) => match sub_command {
@@ -456,7 +530,6 @@ async fn main() {
             FileCommands::Sha1 { file } => file_commands::sha1_checksum(file),
             FileCommands::Sha256 { file } => file_commands::sha256_checksum(file),
             FileCommands::Zip { dir, file } => file_commands::zip_directory(dir, file),
-
         },
         Commands::Time(sub_command) => match sub_command {
             TimeCommands::Unix { milli } => time_commands::unix_timestamp(milli),
@@ -464,13 +537,30 @@ async fn main() {
         },
         Commands::Math(sub_command) => match sub_command {
             MathCommands::Eval { expression } => math_commands::evaluate(expression),
-            MathCommands::Plot { startX, endX, stepX, expression } => math_commands::plot(startX, endX, stepX, expression),
+            MathCommands::Plot {
+                start_x,
+                end_x,
+                step_x,
+                expression,
+            } => math_commands::plot(start_x, end_x, step_x, expression),
         },
-          Commands::Bits(sub_command) => match sub_command{
-                BitsCommands::Board { binary, decimal, hex } => bits_commands::bitboard(binary, decimal, hex),
-                BitsCommands::ToBin { decimal, hex } => bits_commands::to_binary(decimal, hex),
-                BitsCommands::ToDec { bin, hex } => bits_commands::to_dec(bin, hex),
-                BitsCommands::ToHex { decimal, bin } => bits_commands::to_hex(decimal, bin),            
-            }
+        Commands::Bits(sub_command) => match sub_command {
+            BitsCommands::Board {
+                binary,
+                decimal,
+                hex,
+            } => bits_commands::bitboard(binary, decimal, hex),
+            BitsCommands::ToBin { decimal, hex } => bits_commands::to_binary(decimal, hex),
+            BitsCommands::ToDec { bin, hex } => bits_commands::to_dec(bin, hex),
+            BitsCommands::ToHex { decimal, bin } => bits_commands::to_hex(decimal, bin),
+        },
+        Commands::Process(sub_command) => match sub_command {
+            ProcessCommands::Usage {
+                filter,
+                sort_by,
+                limit,
+                watch,
+            } => process_commands::system_process_info(filter, sort_by, limit, watch),
+        },
     }
 }

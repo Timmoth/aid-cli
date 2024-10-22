@@ -12,7 +12,6 @@ theme:
 nav:
   - Overview ✅: index.md
   - Quick start ▶️: quickstart.md
-  - Releases 📒: releases.md
   - Support 🛟: support.md
   - Contributing 🙏: contributing.md
   - Features:
@@ -23,6 +22,7 @@ nav:
       - mem: features/mem.md
       - disk: features/disk.md
       - network: features/network.md
+      - process: features/process.md
       - json: features/json.md
       - csv: features/csv.md
       - text: features/text.md

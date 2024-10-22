@@ -79,6 +79,7 @@ cargo build --release
  | aid time    | Time related functions                                    |
  | aid bits    | Bit manipulation functions                                |
  | aid math    | Math functions                                            |
+ | aid process | Process monitoring functions                              |
  | aid help    | Print this message or the help of the given subcommand(s) |
 ```
 ## All commands:
@@ -99,6 +100,8 @@ cargo build --release
 | aid mem usage          | Monitor memory usage                                       |
 | aid disk info          | Show disk information                                      |
 | aid network info       | Show network information                                   |
+| aid network usage      | Display network usage                                      |
+| aid process usage      | Display process usage                                      |
 | aid json extract       | Extract a property from JSON data                          |
 | aid json jwt-decode    | Decode a JWT                                               |
 | aid csv search         | Sql search over csv                                        |

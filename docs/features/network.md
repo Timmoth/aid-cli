@@ -15,3 +15,14 @@ aid network info -j
   }
 ]
 ```
+
+```
+  aid network usage  Display network usage
+            -w, --watch  Continuously monitor network usage.
+
+-----input-----
+aid network usage -w
+-----output-----
+WiFi: rx 1.05 kB/s, tx 0 B/s
+WiFi-QoS Packet Scheduler-0000: rx 1.05 kB/s, tx 0 B/s
+```
