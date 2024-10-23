@@ -1,6 +1,6 @@
 [package]
 name = "aid"
-version = "0.1.8"
+version = "0.1.9"
 edition = "2021"
 
 [dependencies]
@@ -26,3 +26,5 @@ sha1 = "0.10.5"
 time = { version = "0.3", features = ["macros", "formatting", "local-offset"] }
 walkdir = "2.5.0"
 zip = "2.2.0"
+cron-descriptor = "=0.1.0"
+chrono = "0.4.38"
