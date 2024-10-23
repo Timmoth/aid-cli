@@ -1,7 +1,7 @@
+use std::io::{self, Read};
+
 use aid::{
-    bits_commands, cpu_commands, csv_commands, disk_commands, file_commands, http_commands,
-    ip_commands, json_commands, math_commands, mem_commands, network_commands, port_commands,
-    process_commands, text_commands, time_commands,
+    bits_commands, cpu_commands, csv_commands, disk_commands, file_commands, http_commands, input_utils, ip_commands, json_commands, math_commands, mem_commands, network_commands, port_commands, process_commands, text_commands, time_commands
 };
 use clap::{Parser, Subcommand};
 
@@ -244,8 +244,8 @@ enum JsonCommands {
     },
     #[command(about = "Decode a JWT")]
     JwtDecode {
-        #[arg(short = 'j', long = "jwt", help = "Specify JWT to decode.")]
-        jwt: String,
+        #[arg(trailing_var_arg = true)]
+        c_args: Vec<String>,
     },
 }
 
@@ -264,14 +264,14 @@ enum CsvCommands {
 enum TextCommands {
     #[command(about = "base64 encode")]
     Base64Encode {
-        #[arg(short = 'i', long = "input", help = "Input text to base64 encode.")]
-        input: String,
+        #[arg(trailing_var_arg = true)]
+        c_args: Vec<String>,
     },
 
     #[command(about = "base64 decode")]
     Base64Decode {
-        #[arg(short = 'i', long = "input", help = "Input text to base 64 decode.")]
-        input: String,
+        #[arg(trailing_var_arg = true)]
+        c_args: Vec<String>,
     },
 
     #[command(about = "search a text file for lines that match a regex")]
@@ -360,8 +360,8 @@ enum TimeCommands {
 enum MathCommands {
     #[command(about = "Evaluates a math expression")]
     Eval {
-        #[arg(short = 'e', long = "exp", help = "Math expression to evaluate.")]
-        expression: String,
+        #[arg(trailing_var_arg = true)]
+        c_args: Vec<String>,
     },
     #[command(about = "Plot a math expression")]
     Plot {
@@ -376,58 +376,25 @@ enum MathCommands {
             allow_hyphen_values = true
         )]
         step_x: f32,
-        #[arg(short = 'e', long = "exp", help = "Math expression to plot.")]
-        expression: String,
+        #[arg(trailing_var_arg = true)]
+        c_args: Vec<String>,
     },
 }
 
 #[derive(Subcommand, Debug, Clone)]
 enum BitsCommands {
-    #[command(about = "Display the number in bitboard representation")]
-    Board {
-        #[arg(
-            short = 'b',
-            long = "bin",
-            help = "Display the binary value as a bitboard."
-        )]
-        binary: Option<String>,
-        #[arg(
-            short = 'd',
-            long = "dec",
-            help = "Display the decimal value as a bitboard."
-        )]
-        decimal: Option<u64>,
-        #[arg(long = "hex", help = "Display the decimal value as a bitboard.")]
-        hex: Option<String>,
-    },
-    #[command(about = "Converts a number to it's binary representation")]
-    ToBin {
-        #[arg(
-            short = 'd',
-            long = "dec",
-            help = "Convert the decimal number to binary."
-        )]
-        decimal: Option<u64>,
-        #[arg(long = "hex", help = "Converts the hex number to binary.")]
-        hex: Option<String>,
-    },
-    #[command(about = "Converts a number to it's decimal representation")]
-    ToDec {
-        #[arg(
-            short = 'b',
-            long = "bin",
-            help = "Converts the binary number to hedecimalx."
-        )]
-        bin: Option<String>,
-        #[arg(long = "hex", help = "Converts the hex number to decimal.")]
-        hex: Option<String>,
-    },
-    #[command(about = "Converts a number to it's hex representation")]
-    ToHex {
-        #[arg(short = 'd', long = "dec", help = "Convert the decimal number to hex.")]
-        decimal: Option<u64>,
-        #[arg(short = 'b', long = "bin", help = "Converts the binary number to hex.")]
-        bin: Option<String>,
+    #[command(about = "Evaluates a bitwise expression, converts base, visualize binary / display info")]
+    Eval {
+        #[arg(short= 'i', long = "info", help = "Output the bitboard representation.")]
+        board: bool,
+        #[arg(short='c', long = "chess", help = "Output the chess bitboard representation.")]
+        chess_board: bool,
+        #[arg(short = 'b', long = "bin", help = "Output the result in binary.")]
+        binary: bool,
+        #[arg(long = "hex", help = "Output the result in hex.")]
+        hex: bool,
+        #[arg(trailing_var_arg = true)]
+        c_args: Vec<String>,
     },
 }
 
@@ -504,7 +471,7 @@ async fn main() {
 
         Commands::Json(sub_command) => match sub_command {
             JsonCommands::Extract { property } => json_commands::json_extract(property).await,
-            JsonCommands::JwtDecode { jwt } => json_commands::json_decode_jwt(&jwt),
+            JsonCommands::JwtDecode { c_args } => json_commands::json_decode_jwt(&input_utils::args_or_readline(c_args)),
         },
 
         Commands::Csv(sub_command) => match sub_command {
@@ -512,8 +479,8 @@ async fn main() {
         },
 
         Commands::Text(sub_command) => match sub_command {
-            TextCommands::Base64Encode { input } => text_commands::base64_encode(input),
-            TextCommands::Base64Decode { input } => text_commands::base64_decode(input),
+            TextCommands::Base64Encode { c_args } => text_commands::base64_encode(input_utils::args_or_readline(c_args)),
+            TextCommands::Base64Decode { c_args } => text_commands::base64_decode(input_utils::args_or_readline(c_args)),
             TextCommands::Regex { file, regex } => text_commands::regex_search(file, regex),
             TextCommands::Lines {
                 file,
@@ -536,23 +503,17 @@ async fn main() {
             TimeCommands::Dt { local, rfc } => time_commands::date_time(local, rfc),
         },
         Commands::Math(sub_command) => match sub_command {
-            MathCommands::Eval { expression } => math_commands::evaluate(expression),
+            MathCommands::Eval { c_args } => math_commands::evaluate(input_utils::args_or_readline(c_args)),
             MathCommands::Plot {
                 start_x,
                 end_x,
                 step_x,
-                expression,
-            } => math_commands::plot(start_x, end_x, step_x, expression),
+                c_args,
+            } => math_commands::plot(start_x, end_x, step_x, input_utils::args_or_readline(c_args)),
         },
         Commands::Bits(sub_command) => match sub_command {
-            BitsCommands::Board {
-                binary,
-                decimal,
-                hex,
-            } => bits_commands::bitboard(binary, decimal, hex),
-            BitsCommands::ToBin { decimal, hex } => bits_commands::to_binary(decimal, hex),
-            BitsCommands::ToDec { bin, hex } => bits_commands::to_dec(bin, hex),
-            BitsCommands::ToHex { decimal, bin } => bits_commands::to_hex(decimal, bin),
+            BitsCommands::Eval { board, chess_board, binary, hex, c_args } => bits_commands::evaluate(board, chess_board, binary, hex, input_utils::args_or_readline(c_args)),
+
         },
         Commands::Process(sub_command) => match sub_command {
             ProcessCommands::Usage {

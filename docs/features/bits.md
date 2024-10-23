@@ -1,67 +1,68 @@
-### aid bits board
+### aid bits eval
 ```
-  aid bits board  Display the number in bitboard representation
-            -b, --bin <BINARY>   Display the binary value as a bitboard.
-            -d, --dec <DECIMAL>  Display the decimal value as a bitboard.
-                --hex <HEX>      Display the decimal value as a bitboard.
+  aid bits eval <EXPRESSION>  Evaluates a bitwise expression, converts base, visualize binary / display info
+                -i, --info   Output the bitboard representation.
+                -c, --chess  Output the chess bitboard representation.
+                -b, --bin    Output the result in binary.
+                    --hex    Output the result in hex.
 
 -----input-----
-aid bits board -d 14992333222294
-
+aid bits eval 0b1001
 -----output-----
-00 | 0  0  0  0  0  0  0  0  
+9
+
+-----input-----
+aid bits eval --hex 0b10101001
+-----output-----
+a9
+
+-----input-----
+aid bits eval --bin 0xa9
+-----output-----
+10101001
+
+-----input-----
+aid bits eval --bin '0xa9 << 2 | (0b1010 & 7)'
+-----output-----
+1010100110
+
+-----input-----
+aid bits eval --info '!((0b11110000 ^ 0b00001111) << 8)'
+-----output-----
+FF | 1  1  1  1  1  1  1  1  
+FF | 1  1  1  1  1  1  1  1
+FF | 1  1  1  1  1  1  1  1
+FF | 1  1  1  1  1  1  1  1
+FF | 1  1  1  1  1  1  1  1
+FF | 1  1  1  1  1  1  1  1
 00 | 0  0  0  0  0  0  0  0
-0D | 0  0  0  0  1  1  0  1
-A2 | 1  0  1  0  0  0  1  0
-AC | 1  0  1  0  1  1  0  0
-B2 | 1  0  1  1  0  0  1  0
-31 | 0  0  1  1  0  0  0  1
-96 | 1  0  0  1  0  1  1  0
+FF | 1  1  1  1  1  1  1  1
     -----------------------
      7  6  5  4  3  2  1  0
-dec: 14992333222294
-hex: DA2ACB23196
-bin: 11011010001010101100101100100011000110010110
-lsb: 1
-msb: 43
-set bits: 21
-```
-
-### aid bits to-bin
-```
-  aid bits to-bin  Converts a number to it's binary representation
-            -d, --dec <DECIMAL>  Convert the decimal number to binary.
-                --hex <HEX>      Converts the hex number to binary.
+dec: 18446744073709486335
+hex: FFFFFFFFFFFF00FF
+bin: 1111111111111111111111111111111111111111111111110000000011111111
+lsb: 0
+msb: 63
+set bits: 56
 
 -----input-----
-aid bits to-bin -d 134
-
+aid bits eval --chess '!(0xFEFEFEFEFEFEFEFE << 8)'
 -----output-----
-10000110
-```
-
-### aid bits to-dec
-```
-  aid bits to-dec  Converts a number to it's decimal representation
-            -b, --bin <BIN>  Converts the binary number to hedecimalx.
-                --hex <HEX>  Converts the hex number to decimal.
-
------input-----
-aid bits to-dec -b 10000110
-
------output-----
-134
-```
-
-### aid bits to-hex
-```
-  aid bits to-hex  Converts a number to it's hex representation
-            -d, --dec <DECIMAL>  Convert the decimal number to hex.
-            -b, --bin <BIN>      Converts the binary number to hex.
-
------input-----
-aid bits to-hex -b 10000110
-
------output-----
-86
+8 | 1  0  0  0  0  0  0  0  
+7 | 1  0  0  0  0  0  0  0
+6 | 1  0  0  0  0  0  0  0
+5 | 1  0  0  0  0  0  0  0
+4 | 1  0  0  0  0  0  0  0
+3 | 1  0  0  0  0  0  0  0
+2 | 1  0  0  0  0  0  0  0
+1 | 1  1  1  1  1  1  1  1
+   -----------------------
+    A  B  C  D  E  F  G  H
+dec: 72340172838076927
+hex: 1010101010101FF
+bin: 100000001000000010000000100000001000000010000000111111111
+lsb: 0
+msb: 56
+set bits: 15
 ```

@@ -1,10 +1,9 @@
 ### aid math eval
 ```
-  aid math eval  Evaluates a math expression
-            -e, --exp <EXPRESSION>  Math expression to evaluate.
+  aid math eval <EXPRESSION>  Evaluates a math expression
 
 -----input-----
-aid math eval -e "sin(pi / 2) * 8 ^ e"
+aid math eval "sin(pi / 2) * 8 ^ e"
 
 -----output-----
 285.0054081607272
@@ -12,14 +11,13 @@ aid math eval -e "sin(pi / 2) * 8 ^ e"
 
 ### aid math plot
 ```
-  aid math plot  Plots a math expression
+  aid math plot <EXPRESSION> Plots a math expression
               --start <START_X>   Start x coord.
               --end <END_X>       End x coord.
             -s, --step <STEP_X>     x step size.
-            -e, --exp <EXPRESSION>  Math expression to plot.
 
 -----input-----
-aid math plot --start -20 --end 20 --step 0.5 --exp "x * sin(1 - x)"
+aid math plot --start -20 --end 20 --step 0.5 "x * sin(1 - x)"
 
 -----output-----
 expression: x * sin(1 - x)

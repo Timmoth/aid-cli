@@ -1,20 +1,18 @@
 ### aid text base64-encode
 ```
-  aid text base64-encode  encodes a base64 string
-            -i, --input <INPUT>   Input text to base64 encode.
+  aid text base64-encode <INPUT> encodes a base64 string
 
 -----input-----
-aid text base64-encode -i "Hello, world!"
+aid text base64-encode "Hello, world!"
 -----output-----
 SGVsbG8sIHdvcmxkIQ==
 ```
 ### aid text base64-decode
 ```
-  aid text base64-decode  decodes a base64 string
-            -i, --input <INPUT>   Input text to base64 decode.
+  aid text base64-decode <INPUT> decodes a base64 string
 
 -----input-----
-aid text base64-decode -i SGVsbG8sIHdvcmxkIQ==
+aid text base64-decode SGVsbG8sIHdvcmxkIQ==
 -----output-----
 Hello, world!
 ```
