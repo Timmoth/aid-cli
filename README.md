@@ -112,8 +112,8 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
 | [u] 0.1.3 | aid math plot          | Plot a math expression                                     |
 
 [a] added in version x.x.x
-[u] lasted updated in version x.x.x
-[p] last patched in version x.x.x
+[u] updated in version x.x.x
+[p] patched in version x.x.x
 [d] deprecated in version x.x.x
 ```
 
