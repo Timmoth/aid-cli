@@ -6,20 +6,20 @@ ARCH="$(uname -m)"
 
 if [[ "$OS" == "Linux" ]]; then
     if [[ "$ARCH" == "x86_64" ]]; then
-        URL="https://github.com/Timmoth/aid-cli/releases/download/aid-0.1.8/aid-linux"
+        URL="https://github.com/Timmoth/aid-cli/releases/download/aid-0.1.9/aid-linux"
     else
         echo "Error: Unsupported architecture for Linux."
         exit 1
     fi
 elif [[ "$OS" == "Darwin" ]]; then
     if [[ "$ARCH" == "x86_64" ]]; then
-        URL="https://github.com/Timmoth/aid-cli/releases/download/aid-0.1.8/aid-mac"
+        URL="https://github.com/Timmoth/aid-cli/releases/download/aid-0.1.9/aid-mac"
         # Check if running on an x86 mac with Rosetta
         if [[ $(sysctl -n sysctl.proc_translated) == "1" ]]; then
             echo "Running on Apple Silicon with Rosetta. Consider downloading the ARM64 version."
         fi
     elif [[ "$ARCH" == "arm64" ]]; then
-        URL="https://github.com/Timmoth/aid-cli/releases/download/aid-0.1.8/aid-mac-arm"
+        URL="https://github.com/Timmoth/aid-cli/releases/download/aid-0.1.9/aid-mac-arm"
     else
         echo "Error: Unsupported architecture for macOS."
         exit 1
