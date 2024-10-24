@@ -16,6 +16,36 @@ aid text base64-decode SGVsbG8sIHdvcmxkIQ==
 -----output-----
 Hello, world!
 ```
+### aid text guid
+```
+  aid text guid Generates a random GUID
+
+-----input-----
+aid text guid
+-----output-----
+af6b8756-32fb-4630-bfe4-264c9a476273
+```
+
+### aid text url-encode
+```
+  aid text url-encode url encodes a string
+
+-----input-----
+aid text url-encode hello, world!
+-----output-----
+hello%20world%21
+```
+
+### aid text url-decode
+```
+  aid text url-decode decodes a url encoded string
+
+-----input-----
+aid text url-decode hello%20world%21
+-----output-----
+hello world!
+```
+
 ### aid text lines
 ```
   aid text lines  reads and prints lines from a text file

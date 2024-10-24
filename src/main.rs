@@ -1,7 +1,7 @@
-use std::io::{self, Read};
-
 use aid::{
-    bits_commands, cpu_commands, csv_commands, disk_commands, file_commands, http_commands, input_utils, ip_commands, json_commands, math_commands, mem_commands, network_commands, port_commands, process_commands, text_commands, time_commands
+    bits_commands, cpu_commands, csv_commands, disk_commands, env_commands, file_commands,
+    http_commands, input_utils, ip_commands, json_commands, math_commands, mem_commands,
+    network_commands, port_commands, process_commands, text_commands, time_commands,
 };
 use clap::{Parser, Subcommand};
 
@@ -44,6 +44,8 @@ enum Commands {
     Bits(BitsCommands),
     #[command(subcommand, about = "Process monitoring functions")]
     Process(ProcessCommands),
+    #[command(subcommand, about = "Environment information")]
+    Env(EnvCommands),
 }
 #[derive(Subcommand, Debug, Clone)]
 enum IpCommands {
@@ -273,7 +275,16 @@ enum TextCommands {
         #[arg(trailing_var_arg = true)]
         c_args: Vec<String>,
     },
-
+    #[command(about = "url encodes a string")]
+    UrlEncode {
+        #[arg(trailing_var_arg = true)]
+        c_args: Vec<String>,
+    },
+    #[command(about = "decodes a url encoded string")]
+    UrlDecode {
+        #[arg(trailing_var_arg = true)]
+        c_args: Vec<String>,
+    },
     #[command(about = "search a text file for lines that match a regex")]
     Regex {
         #[arg(short = 'f', long = "file", help = "Input text file to search.")]
@@ -303,6 +314,9 @@ enum TextCommands {
         )]
         tail: Option<usize>,
     },
+
+    #[command(about = "Generates a random guid")]
+    Guid
 }
 
 #[derive(Subcommand, Debug, Clone)]
@@ -344,8 +358,7 @@ enum TimeCommands {
         #[arg(short = 'm', long = "milli", action = clap::ArgAction::SetTrue,
                help = "Output the timestamp as unix milliseconds.")]
         milli: bool,
-        #[arg(short = 'd', long = "dt",
-        help = "Use the specified datetime.")]
+        #[arg(short = 'd', long = "dt", help = "Use the specified datetime.")]
         dt: Option<String>,
     },
     #[command(about = "Display the datetime")]
@@ -353,23 +366,26 @@ enum TimeCommands {
         #[arg(short = 'l', long = "local", action = clap::ArgAction::SetTrue,
         help = "Use the local datetime.")]
         local: bool,
-        #[arg(short = 'u', long = "unix",
-        help = "Use the specified unix second timestamp.")]
+        #[arg(
+            short = 'u',
+            long = "unix",
+            help = "Use the specified unix second timestamp."
+        )]
         unix: Option<u64>,
         #[arg(short = 'r', long = "rfc", action = clap::ArgAction::SetTrue,
         help = "Output the datetime in Rfc3339 format.")]
         rfc: bool,
     },
     #[command(about = "Describes a chron job")]
-    Chron{
+    Chron {
         #[arg(trailing_var_arg = true)]
         c_args: Vec<String>,
     },
     #[command(about = "Start a countdown timer for the given minutes / seconds")]
-    CountDown{
+    CountDown {
         #[arg(trailing_var_arg = true)]
         c_args: Vec<String>,
-    }
+    },
 }
 
 #[derive(Subcommand, Debug, Clone)]
@@ -399,11 +415,21 @@ enum MathCommands {
 
 #[derive(Subcommand, Debug, Clone)]
 enum BitsCommands {
-    #[command(about = "Evaluates a bitwise expression, converts base, visualize binary / display info")]
+    #[command(
+        about = "Evaluates a bitwise expression, converts base, visualize binary / display info"
+    )]
     Eval {
-        #[arg(short= 'i', long = "info", help = "Output the bitboard representation.")]
+        #[arg(
+            short = 'i',
+            long = "info",
+            help = "Output the bitboard representation."
+        )]
         board: bool,
-        #[arg(short='c', long = "chess", help = "Output the chess bitboard representation.")]
+        #[arg(
+            short = 'c',
+            long = "chess",
+            help = "Output the chess bitboard representation."
+        )]
         chess_board: bool,
         #[arg(short = 'b', long = "bin", help = "Output the result in binary.")]
         binary: bool,
@@ -438,6 +464,25 @@ enum ProcessCommands {
         limit: Option<usize>,
         #[arg(short = 'w', long = "watch", help = "Continuously monitor the processes.", action = clap::ArgAction::SetTrue)]
         watch: bool,
+    },
+}
+
+#[derive(Subcommand, Debug, Clone)]
+enum EnvCommands {
+    #[command(about = "Filter / Display environment variables")]
+    Vars {
+        #[arg(
+            short = 'k',
+            long = "kfilter",
+            help = "filter the results by a key regex."
+        )]
+        kfilter: Option<String>,
+        #[arg(
+            short = 'v',
+            long = "vfilter",
+            help = "filter the results by a value regex."
+        )]
+        vfilter: Option<String>,
     },
 }
 
@@ -487,7 +532,9 @@ async fn main() {
 
         Commands::Json(sub_command) => match sub_command {
             JsonCommands::Extract { property } => json_commands::json_extract(property).await,
-            JsonCommands::JwtDecode { c_args } => json_commands::json_decode_jwt(&input_utils::args_or_readline(c_args)),
+            JsonCommands::JwtDecode { c_args } => {
+                json_commands::json_decode_jwt(&input_utils::args_or_readline(c_args))
+            }
         },
 
         Commands::Csv(sub_command) => match sub_command {
@@ -495,8 +542,12 @@ async fn main() {
         },
 
         Commands::Text(sub_command) => match sub_command {
-            TextCommands::Base64Encode { c_args } => text_commands::base64_encode(input_utils::args_or_readline(c_args)),
-            TextCommands::Base64Decode { c_args } => text_commands::base64_decode(input_utils::args_or_readline(c_args)),
+            TextCommands::Base64Encode { c_args } => {
+                text_commands::base64_encode(input_utils::args_or_readline(c_args))
+            }
+            TextCommands::Base64Decode { c_args } => {
+                text_commands::base64_decode(input_utils::args_or_readline(c_args))
+            }
             TextCommands::Regex { file, regex } => text_commands::regex_search(file, regex),
             TextCommands::Lines {
                 file,
@@ -505,6 +556,15 @@ async fn main() {
                 head,
                 tail,
             } => text_commands::print_lines(file, start, end, head, tail),
+            TextCommands::Guid => {
+                text_commands::guid()
+            }
+            TextCommands::UrlEncode {c_args} => {
+                text_commands::url_encode(&input_utils::args_or_readline(c_args))
+            }
+            TextCommands::UrlDecode {c_args} => {
+                text_commands::url_decode(&input_utils::args_or_readline(c_args))
+            }
         },
 
         Commands::File(sub_command) => match sub_command {
@@ -517,22 +577,43 @@ async fn main() {
         Commands::Time(sub_command) => match sub_command {
             TimeCommands::Unix { milli, dt } => time_commands::unix_timestamp(milli, dt),
             TimeCommands::Dt { local, rfc, unix } => time_commands::date_time(local, rfc, unix),
-            TimeCommands::Chron { c_args } => time_commands::chron_tostring(input_utils::args_or_readline(c_args)),
-            TimeCommands::CountDown { c_args } => time_commands::countdown(input_utils::args_or_readline(c_args)),
-
+            TimeCommands::Chron { c_args } => {
+                time_commands::chron_tostring(input_utils::args_or_readline(c_args))
+            }
+            TimeCommands::CountDown { c_args } => {
+                time_commands::countdown(input_utils::args_or_readline(c_args))
+            }
         },
         Commands::Math(sub_command) => match sub_command {
-            MathCommands::Eval { c_args } => math_commands::evaluate(input_utils::args_or_readline(c_args)),
+            MathCommands::Eval { c_args } => {
+                math_commands::evaluate(input_utils::args_or_readline(c_args))
+            }
             MathCommands::Plot {
                 start_x,
                 end_x,
                 step_x,
                 c_args,
-            } => math_commands::plot(start_x, end_x, step_x, input_utils::args_or_readline(c_args)),
+            } => math_commands::plot(
+                start_x,
+                end_x,
+                step_x,
+                input_utils::args_or_readline(c_args),
+            ),
         },
         Commands::Bits(sub_command) => match sub_command {
-            BitsCommands::Eval { board, chess_board, binary, hex, c_args } => bits_commands::evaluate(board, chess_board, binary, hex, input_utils::args_or_readline(c_args)),
-
+            BitsCommands::Eval {
+                board,
+                chess_board,
+                binary,
+                hex,
+                c_args,
+            } => bits_commands::evaluate(
+                board,
+                chess_board,
+                binary,
+                hex,
+                input_utils::args_or_readline(c_args),
+            ),
         },
         Commands::Process(sub_command) => match sub_command {
             ProcessCommands::Usage {
@@ -541,6 +622,11 @@ async fn main() {
                 limit,
                 watch,
             } => process_commands::system_process_info(filter, sort_by, limit, watch),
+        },
+        Commands::Env(sub_command) => match sub_command {
+            EnvCommands::Vars { kfilter, vfilter } => {
+                env_commands::print_env_vars(kfilter, vfilter)
+            }
         },
     }
 }

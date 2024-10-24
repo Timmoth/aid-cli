@@ -20,3 +20,4 @@ pub mod graph_utils;
 pub mod process_commands;
 pub mod bits_utils;
 pub mod input_utils;
+pub mod env_commands;

@@ -1,5 +1,7 @@
 use base64::prelude::*;
+use percent_encoding::{percent_decode, utf8_percent_encode, NON_ALPHANUMERIC};
 use regex::Regex;
+use uuid::Uuid;
 use std::{fs::File, io::{self, BufRead}, str};
 use base64::engine::general_purpose::URL_SAFE;
 
@@ -120,4 +122,18 @@ pub fn print_lines(
             println!("{}", line);
         }
     }
+}
+
+pub fn guid(){
+    println!("{}", Uuid::new_v4());
+}
+
+pub fn url_encode(input: &String) {
+    println!("{}", utf8_percent_encode(input, NON_ALPHANUMERIC).to_string());
+}
+
+pub fn url_decode(input: &String) {
+     println!("{}",percent_decode(input.as_bytes())
+        .decode_utf8_lossy()
+        .to_string());
 }

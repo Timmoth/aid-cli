@@ -16,6 +16,7 @@ aid network info -j
 ]
 ```
 
+### aid network usage
 ```
   aid network usage  Display network usage
             -w, --watch  Continuously monitor network usage.
