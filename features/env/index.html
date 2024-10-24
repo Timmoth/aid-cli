@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Timmoth" /><link rel="canonical" href="https://timmoth.github.io/aid-cli/features/env/" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Env - Aid-CLI Docs</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Env";
+        var mkdocs_page_input_path = "features/env.md";
+        var mkdocs_page_url = "/aid-cli/features/env/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../..">
+          <img src="../../assets/logo.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Overview ✅</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../quickstart/">Quick start ▶️</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../support/">Support 🛟</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../contributing/">Contributing 🙏</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Features</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../http/">http</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../ip/">ip</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../port/">port</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../cpu/">cpu</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../mem/">mem</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../disk/">disk</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../network/">network</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../process/">process</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../json/">json</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../csv/">csv</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../text/">text</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../file/">file</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../time/">time</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../bits/">bits</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../math/">math</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Aid-CLI Docs</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Env</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/Timmoth/aid-cli/edit/main/docs/features/env.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h3 id="aid-env-vars">aid env vars</h3>
+<div class="highlight"><pre><span></span><code>  aid env vars Filter / Display environment variables
+            -k, --kfilter &lt;KFILTER&gt;  filter the results by a key regex.
+            -v, --vfilter &lt;VFILTER&gt;  filter the results by a value regex.
+
+-----input-----
+aid env vars
+-----output-----
+CommonProgramFiles:
+        C:\Program Files\Common Files
+CommonProgramFiles(x86):
+        C:\Program Files (x86)\Common Files
+CommonProgramW6432:
+        C:\Program Files\Common Files
+JAVA_HOME:
+        C:\Program Files\Java\jdk-21\bin
+ProgramData:
+        C:\ProgramData
+ProgramFiles:
+        C:\Program Files
+ProgramFiles(x86):
+        C:\Program Files (x86)
+
+-----input-----
+aid env vars -k program
+-----output-----
+CommonProgramFiles:
+        C:\Program Files\Common Files
+CommonProgramFiles(x86):
+        C:\Program Files (x86)\Common Files
+CommonProgramW6432:
+        C:\Program Files\Common Files
+ProgramData:
+        C:\ProgramData
+ProgramFiles:
+        C:\Program Files
+ProgramFiles(x86):
+        C:\Program Files (x86)
+
+-----input-----
+aid env vars -k program -v common
+-----output-----
+CommonProgramFiles:
+        C:\Program Files\Common Files
+CommonProgramFiles(x86):
+        C:\Program Files (x86)\Common Files
+CommonProgramW6432:
+        C:\Program Files\Common Files
+</code></pre></div>
+<h3 id="aid-time-count-down">aid time count-down</h3>
+<div class="highlight"><pre><span></span><code>  aid time count-down &lt;MM:SS&gt; Starts a countdown timer
+
+-----input-----
+aid time count-down 10:30
+-----output-----
+Time left: 10 minutes 30 seconds
+</code></pre></div>
+<h3 id="aid-time-unix">aid time unix</h3>
+<div class="highlight"><pre><span></span><code>  aid time unix  Display unix timestamp
+            -d, --dt  Use the specified datetime.
+            -m, --milli  Output the timestamp as unix milliseconds.
+
+-----input-----
+aid time unix 
+-----output-----
+1729546694
+
+-----input-----
+aid time unix -m
+-----output-----
+1729715103358
+
+-----input-----
+aid time unix -d &#39;Fri, 14 Jul 2017 02:40:00 +0000&#39;
+-----output-----
+1500000000
+</code></pre></div>
+<h3 id="aid-time-dt">aid time dt</h3>
+<div class="highlight"><pre><span></span><code>  aid time dt  Display the datetime
+            -l, --local  Use the local datetime.
+            -u, --unix  Use the specified unix second timestamp.
+            -r, --rfc   Output the datetime in Rfc3339 format.
+
+-----input-----
+aid time dt
+-----output-----
+2024-10-21 21:38:34
+
+-----input-----
+aid time dt -l
+-----output-----
+2024-10-21 22:38:14
+
+-----input-----
+aid time dt -u 1729546694
+-----output-----
+2024-10-21 21:38:14
+
+-----input-----
+aid time dt --rfc
+-----output-----
+2024-10-23T20:38:00.086663200+00:00
+</code></pre></div>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Timmoth/aid-cli/" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
